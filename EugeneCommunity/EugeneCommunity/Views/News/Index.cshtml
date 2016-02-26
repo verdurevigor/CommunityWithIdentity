@@ -1,0 +1,20 @@
+﻿@model EugeneCommunity.Models.News
+
+@{
+    ViewBag.Title = "Today's News";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Today's News</h2>
+
+<div class="row">
+    <div class="col-md-4 col-xm-6">
+        <h3>@Model.Title</h3>
+        <p>@Model.Story</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        @Html.ActionLink("View Archived News", "Archive", "News")
+    </div>
+</div>

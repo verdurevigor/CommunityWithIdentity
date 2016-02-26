@@ -1,0 +1,39 @@
+﻿@model IEnumerable<EugeneCommunity.Models.TopicViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Community Forum</h2>
+
+<p>
+    @Html.ActionLink("Create New Topic", "Create")
+    |
+    @Html.ActionLink("Search Messages", "Search", "Messages")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastPost)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastPost)
+        </td>
+        <td>
+            @Html.ActionLink("View Posts", "Details", new { id=item.TopicId }) | @item.Posts.Count()    @* TODO: get count of each topic, not the count of posts from TopicViewModel*@
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,94 @@
+﻿
+@{
+    ViewBag.Title = "Archive";
+}
+
+<h2>Story Archive</h2>
+
+<div class="row">
+    <p class="col-xs-12">Search archive by month and year</p>
+    <form>
+        <div class="col-sm-4">
+            <div class="radio">
+                <label>
+                    January <input type="radio" name="radioMonth" value="1" />
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    February <input type="radio" name="radioMonth" value="1" />
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    March <input type="radio" name="radioMonth" value="1" />
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    April <input type="radio" name="radioMonth" value="1" />
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    May <input type="radio" name="radioMonth" value="1" />
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    June <input type="radio" name="radioMonth" value="1" />
+                </label>
+             </div>
+        </div>
+        <div class="col-sm-4">
+             <div class="radio">
+                <label>
+                    July <input type="radio" name="radioMonth" value="1" />
+                </label>
+             </div>
+            <div class="radio">
+                <label>
+                    August <input type="radio" name="radioMonth" value="1" />
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    September <input type="radio" name="radioMonth" value="1" />
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    October <input type="radio" name="radioMonth" value="1" />
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    November <input type="radio" name="radioMonth" value="1" />
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    December <input type="radio" name="radioMonth" value="1" />
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="year">Enter a year:</label>
+                <input type="number" id="year" value="@DateTime.Now.Year" />
+            </div>
+            <button type="submit" class="btn btn-default">Search</button>
+        </div>
+    </form>
+</div>
+<hr />
+<div class="row">
+    @*@foreach (Story s in stories)
+        {
+            <div class="col-md-6 col-xm-12">
+                <h3>@s.StoryTitle</h3>
+                <p>@s.StoryContent</p>
+            </div>
+        }
+    *@
+</div>

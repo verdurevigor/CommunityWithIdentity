@@ -1,0 +1,37 @@
+﻿@model EugeneCommunity.Models.TopicViewModel
+@* TODO: consider changing the Model to a MessageViewModel in order to access User Name*@
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div>
+    <h4>Topic</h4>
+    <h2>@Html.DisplayFor(model => model.Title)</h2>
+    <hr />
+    <p><!-- The exta parameters in the ActionLink allow me to specify additional parameters, not that null is required for some reason-->
+        @Html.ActionLink("Make a Post", "Create", "Messages", new { topicId = Model.TopicId }, null)
+    </p>
+    <table class="table table-striped">
+        <tr>
+            <th>Date</th>       <!-- I am unsure how to get the DisplayNameFor the Posts properties -->
+            <th>User Name</th>
+            <th>Message</th>
+        </tr>
+
+        @foreach (var m in Model.Posts)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => m.Date)</td>
+                <td>@Html.DisplayFor(modelItem => m.MemberId)</td>      <!-- TODO: get data for User Name, not MemberId-->
+                <td>@Html.DisplayFor(modelItem => m.Body)</td>
+            </tr>
+        }
+         
+    </table>
+</div>
+<p>
+    @Html.ActionLink("Back to Topics", "Index")
+</p>
