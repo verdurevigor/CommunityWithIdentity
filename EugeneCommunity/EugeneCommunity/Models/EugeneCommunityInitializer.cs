@@ -8,6 +8,7 @@ namespace EugeneCommunity.Models
 {
     public class EugeneCommunityInitializer : DropCreateDatabaseAlways<EugeneCommunityContext>
     {
+        /*
         protected override void Seed(EugeneCommunityContext context)
         {
             Topic t1 = new Topic { TopicId = 1, Title = "IPA Crave" };
@@ -61,5 +62,6 @@ namespace EugeneCommunity.Models
 
             base.Seed(context);
         }
+         * */
     }
 }

@@ -7,6 +7,7 @@ using EugeneCommunity.Models;
 
 namespace EugeneCommunity.Controllers
 {
+    [AllowAnonymous]
     public class NewsController : Controller
     {
 

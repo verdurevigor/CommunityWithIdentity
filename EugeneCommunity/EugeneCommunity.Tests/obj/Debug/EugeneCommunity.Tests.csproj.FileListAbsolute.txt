@@ -27,3 +27,12 @@ C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneComm
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\System.Web.Optimization.xml
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\obj\Debug\EugeneCommunity.Tests.dll
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\obj\Debug\EugeneCommunity.Tests.pdb
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Owin.dll
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.Owin.Security.Cookies.dll
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.Owin.Security.dll
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.Owin.dll
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.Owin.Security.Cookies.xml
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.Owin.Security.xml
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.Owin.xml
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.Owin.Host.SystemWeb.dll
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.Owin.Host.SystemWeb.xml

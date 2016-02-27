@@ -1,0 +1,18 @@
+﻿@model EugeneCommunity.Models.LogInViewModel
+@{
+    ViewBag.Title = "Log In";
+}
+
+<h2>Log In</h2>
+@* TODO: Use my own non-auto-generated form to make it beautifully bootstrap *@
+
+@Html.ValidationSummary(true)
+
+
+@using (Html.BeginForm())   
+{
+    @Html.EditorForModel()
+    <p>
+        <button type="submit">Log In</button>
+    </p>
+}

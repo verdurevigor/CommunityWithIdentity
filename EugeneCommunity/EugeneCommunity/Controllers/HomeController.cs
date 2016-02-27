@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace EugeneCommunity.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         public List<String> facts = new List<String>();
