@@ -1,4 +1,6 @@
 ﻿using EugeneCommunity.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,17 @@ namespace EugeneCommunity.Controllers
     
     public class AuthController : Controller
     {
-        
+        private readonly UserManager<Member> userManager;
+        public AuthController()
+            : this(Startup.UserManagerFactory.Invoke())
+        {
+        }
+
+        public AuthController(UserManager<Member> userManager)
+        {
+            this.userManager = userManager;
+        }
+ 
         // GET: Auth/LogIn
         [AllowAnonymous]
         public ActionResult LogIn(string returnUrl)
@@ -34,20 +46,11 @@ namespace EugeneCommunity.Controllers
                 return View();
             }
 
-            // Don't do this in production!
-            if (model.Email == "admin@admin.com" && model.Password == "password")
+            var user = userManager.Find(model.Email, model.Password);
+
+            if (user != null)
             {
-                var identity = new ClaimsIdentity(new[] {
-                new Claim(ClaimTypes.Name, "Brody"),
-                new Claim(ClaimTypes.Email, "a@b.com"),
-                new Claim(ClaimTypes.Country, "Canada")
-            },
-                    "ApplicationCookie");
-
-                var ctx = Request.GetOwinContext();
-                var authManager = ctx.Authentication;
-
-                authManager.SignIn(identity);
+                SignIn(user);
 
                 return Redirect(GetRedirectUrl(model.ReturnUrl));
             }
@@ -66,6 +69,47 @@ namespace EugeneCommunity.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        //
+        // GET: Auth/Register
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        //
+        //POST: Auth/Register
+        [HttpPost]
+        public ActionResult Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            var user = new Member
+            {
+                Email = model.Email,
+                PasswordHash = model.Password,
+                UserName = model.UserName,
+                State = model.State
+            };
+
+            var result = userManager.Create(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                SignIn(user);
+                return RedirectToAction("Index", "Home");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+
+            return View();
+        }
+
 
         private string GetRedirectUrl(string returnUrl)
         {
@@ -75,6 +119,29 @@ namespace EugeneCommunity.Controllers
             }
 
             return returnUrl;
+        }
+
+        private IAuthenticationManager GetAuthenticationManager()
+        {
+            var ctx = Request.GetOwinContext();
+            return ctx.Authentication;
+        }
+
+        private void SignIn(Member user)
+        {
+            var identity = userManager.CreateIdentity(
+                user, DefaultAuthenticationTypes.ApplicationCookie);
+
+            GetAuthenticationManager().SignIn(identity);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && userManager != null)
+            {
+                userManager.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

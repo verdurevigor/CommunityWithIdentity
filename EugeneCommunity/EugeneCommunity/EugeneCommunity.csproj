@@ -150,6 +150,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AppDbContext.cs" />
     <Compile Include="Models\EugeneCommunityContext.cs" />
     <Compile Include="Models\EugeneCommunityInitializer.cs" />
     <Compile Include="Models\LogInViewModel.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\MessageViewModel.cs" />
     <Compile Include="Models\News.cs" />
+    <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\Topic.cs" />
     <Compile Include="Models\TopicViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -224,6 +226,7 @@
     <Content Include="Views\Topics\Edit.cshtml" />
     <Content Include="Views\Topics\Index.cshtml" />
     <Content Include="Views\Auth\LogIn.cshtml" />
+    <Content Include="Views\Auth\Register.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
