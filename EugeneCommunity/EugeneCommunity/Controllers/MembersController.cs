@@ -10,14 +10,16 @@ using EugeneCommunity.Models;
 
 namespace EugeneCommunity.Controllers
 {
+    [Authorize(Roles="Admin")]  // Viewing, editing, and deleting Members is only authorized for Admin role
     public class MembersController : Controller
     {
-        private EugeneCommunityContext db = new EugeneCommunityContext();
-
+        //private EugeneCommunityContext db = new EugeneCommunityContext();
+        private AppDbContext db = new AppDbContext();
+        [AllowAnonymous]        // TODO: change this, it is to view member data during dev
         // GET: Members
         public ActionResult Index()
         {
-            return View(db.Members.ToList());
+            return View(db.Users.ToList());
         }
 
         // GET: Members/Details/5
@@ -27,7 +29,7 @@ namespace EugeneCommunity.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Member member = db.Members.Find(id);
+            Member member = db.Users.Find(id);
             if (member == null)
             {
                 return HttpNotFound();
@@ -46,11 +48,11 @@ namespace EugeneCommunity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MemberId,Name,Email,Password,IsAdmin")] Member member)
+        public ActionResult Create([Bind(Include = "MemberId,FName,Email,Password,State")] Member member)
         {
             if (ModelState.IsValid)
             {
-                db.Members.Add(member);
+                db.Users.Add(member);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -65,7 +67,7 @@ namespace EugeneCommunity.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Member member = db.Members.Find(id);
+            Member member = db.Users.Find(id);
             if (member == null)
             {
                 return HttpNotFound();
@@ -78,7 +80,7 @@ namespace EugeneCommunity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "MemberId,Name,Email,Password,IsAdmin")] Member member)
+        public ActionResult Edit([Bind(Include = "MemberId,FName,Email,Password,State")] Member member)
         {
             if (ModelState.IsValid)
             {
@@ -96,7 +98,7 @@ namespace EugeneCommunity.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Member member = db.Members.Find(id);
+            Member member = db.Users.Find(id);
             if (member == null)
             {
                 return HttpNotFound();
@@ -109,8 +111,8 @@ namespace EugeneCommunity.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Member member = db.Members.Find(id);
-            db.Members.Remove(member);
+            Member member = db.Users.Find(id);
+            db.Users.Remove(member);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

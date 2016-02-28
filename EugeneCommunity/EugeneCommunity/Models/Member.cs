@@ -20,11 +20,5 @@ namespace EugeneCommunity.Models
 
         [StringLength(41, ErrorMessage = "{0} must be less than 42 characters.")]
         public string State { get; set; }
-
-        // TODO: use this annotation for the RegisterViewModel
-        [Required(ErrorMessage = "{0} is required.")]
-        [StringLength(16, MinimumLength = 6, ErrorMessage = "{0} must be between 6 and 16 characters.")]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
     }
 }

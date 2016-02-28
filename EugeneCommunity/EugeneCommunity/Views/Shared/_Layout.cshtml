@@ -33,6 +33,7 @@
                     @if (@User.Identity.IsAuthenticated == false)
                     {
                         <li>@Html.ActionLink("Login", "LogIn", "Auth")</li>
+                        <li>@Html.ActionLink("Register", "Register", "Auth")</li>
                     }
                     else
                     {

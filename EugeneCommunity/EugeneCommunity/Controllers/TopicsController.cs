@@ -7,12 +7,14 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using EugeneCommunity.Models;
+using Microsoft.AspNet.Identity;
 
 namespace EugeneCommunity.Controllers
 {
     public class TopicsController : Controller
     {
-        private EugeneCommunityContext db = new EugeneCommunityContext();
+        //private EugeneCommunityContext db = new EugeneCommunityContext();
+        AppDbContext db = new AppDbContext();
 
         // GET: Topics
         public ActionResult Index()
@@ -73,9 +75,6 @@ namespace EugeneCommunity.Controllers
         // GET: Topics/Create
         public ActionResult Create()
         {
-            // For now, send a SelectList of users for client to use as an identity
-            ViewBag.CurrentUsers = new SelectList(db.Members.OrderBy(m => m.UserName), "MemberId", "UserName");
-
             return View();
         }
 
@@ -84,10 +83,10 @@ namespace EugeneCommunity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MessageId,Body,Date,Subject,User")] MessageViewModel messageVm, int? CurrentUsers)
+        public ActionResult Create([Bind(Include = "MessageId,Body,Date,Subject,User")] MessageViewModel messageVm)
         {
             // Verify form has appropriate data and that a user has been marked
-            if (ModelState.IsValid && CurrentUsers != null)
+            if (ModelState.IsValid)
             {
                 // Add new Topic to db, then create a message under that topic
 
@@ -95,14 +94,14 @@ namespace EugeneCommunity.Controllers
                 db.Topics.Add(topic);
                 db.SaveChanges();
 
-                Message message = new Message() { Body = messageVm.Body, Date = DateTime.Now, MemberId = (int)CurrentUsers, TopicId = topic.TopicId };
+                Message message = new Message() { Body = messageVm.Body, Date = DateTime.Now, MemberId = User.Identity.GetUserId(), TopicId = topic.TopicId };
                 db.Messages.Add(message);
                 db.SaveChanges();
 
                 return RedirectToAction("Index");
             }
             // If form is invalid repopulate form with sent data, also repopulate the user dropdownlist
-            ViewBag.CurrentUsers = new SelectList(db.Members.OrderBy(m => m.UserName), "MemberId", "UserName");
+            ViewBag.CurrentUsers = new SelectList(db.Users.OrderBy(m => m.UserName), "MemberId", "UserName");
             return View(messageVm);
         }
 

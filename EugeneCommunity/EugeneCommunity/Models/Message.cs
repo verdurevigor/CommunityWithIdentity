@@ -17,6 +17,6 @@ namespace EugeneCommunity.Models
         // FK to Topic
         public virtual int TopicId { get; set; }
         // FK to Member
-        public virtual int MemberId { get; set; }
+        public virtual string MemberId { get; set; }
     }
 }

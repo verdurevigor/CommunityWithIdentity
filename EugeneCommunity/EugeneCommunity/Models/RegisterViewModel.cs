@@ -25,7 +25,7 @@ namespace EugeneCommunity.Models
         
         [Compare("Password")]
         [DataType(DataType.Password)]
-        [Display(Name = "Confirmation Password")]
+        [Display(Name = "Confirm Password")]
         [Required(ErrorMessage = "{0} is required.")]
         public string PasswordConfirmed { get; set; }
 

@@ -16,6 +16,6 @@ namespace EugeneCommunity.Models
         // These last two properties cannot be given [Required] annotation because they are not passed
         // throught the model to the controller, rather, they are passed through the selectlist objects, separate from the model.
         public Topic Subject { get; set; }
-        public Member User { get; set; }
+        public Member Memb { get; set; }
     }
 }

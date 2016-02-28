@@ -14,6 +14,7 @@ namespace EugeneCommunity.Controllers
     public class AuthController : Controller
     {
         private readonly UserManager<Member> userManager;
+
         public AuthController()
             : this(Startup.UserManagerFactory.Invoke())
         {
@@ -45,8 +46,8 @@ namespace EugeneCommunity.Controllers
             {
                 return View();
             }
-
-            var user = userManager.Find(model.Email, model.Password);
+            // .Find method takes parameters UserName and Password. You cannot sign in by email
+            var user = userManager.Find(model.UserName, model.Password);
 
             if (user != null)
             {
@@ -71,6 +72,7 @@ namespace EugeneCommunity.Controllers
 
         //
         // GET: Auth/Register
+        [AllowAnonymous]
         public ActionResult Register()
         {
             return View();
@@ -79,6 +81,7 @@ namespace EugeneCommunity.Controllers
         //
         //POST: Auth/Register
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
@@ -89,7 +92,6 @@ namespace EugeneCommunity.Controllers
             var user = new Member
             {
                 Email = model.Email,
-                PasswordHash = model.Password,
                 UserName = model.UserName,
                 State = model.State
             };

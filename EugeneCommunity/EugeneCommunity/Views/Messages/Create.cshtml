@@ -17,10 +17,10 @@
         <p>NOTE: All Fields Required! If you would like to create your message for a new topic, do so under Forum - @Html.ActionLink("Create new topic", "Create", "Topics")</p>
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
-            @Html.LabelFor(model => model.User.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Memb.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("CurrentUsers", String.Empty)
-                @Html.ValidationMessageFor(model => model.User.UserName, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.Memb.UserName, "", new { @class = "text-danger" })
             </div>
         </div>
 

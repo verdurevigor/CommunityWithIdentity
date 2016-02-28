@@ -14,7 +14,8 @@ namespace EugeneCommunity.Models
         [Required]
         [Display(Name="Topic Title")]
         [StringLength(160, MinimumLength=2, ErrorMessage="{0} must be between 2 and 160 characters.")]
-        public virtual string Title { get; set; } 
+        public virtual string Title { get; set; }
+        // TODO: add a MemberId so that a topic can be edited by the user who created it.
         public List<Message> Posts
         {
             get { return posts; }

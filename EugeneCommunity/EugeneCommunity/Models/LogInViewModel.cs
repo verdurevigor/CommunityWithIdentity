@@ -9,9 +9,10 @@ namespace EugeneCommunity.Models
 {
     public class LogInViewModel
     {
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        [Display(Name = "User Name")]
+        [Required(ErrorMessage = "{0} is required.")]
+        [StringLength(16, MinimumLength = 2, ErrorMessage = "{0} must be between 2 and 16 characters.")]
+        public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

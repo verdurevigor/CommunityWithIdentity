@@ -7,12 +7,14 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using EugeneCommunity.Models;
+using Microsoft.AspNet.Identity;
 
 namespace EugeneCommunity.Controllers
 {
     public class MessagesController : Controller
     {
-        private EugeneCommunityContext db = new EugeneCommunityContext();
+        //private EugeneCommunityContext db = new EugeneCommunityContext();
+        private AppDbContext db = new AppDbContext();
 
         // GET: Messages
         public ActionResult Index()
@@ -28,8 +30,8 @@ namespace EugeneCommunity.Controllers
                                 Subject = (from t in db.Topics
                                            where m.TopicId == t.TopicId
                                            select t).FirstOrDefault(),
-                                User = (from u in db.Members
-                                        where m.MemberId == u.MemberId
+                                Memb = (from u in db.Users
+                                        where m.MemberId == u.Id
                                         select u).FirstOrDefault()
                             }).ToList();
             // Order messages by most recent            Not sure if this is working...
@@ -55,8 +57,8 @@ namespace EugeneCommunity.Controllers
                                 Subject = (from t in db.Topics
                                            where m.TopicId == t.TopicId
                                            select t).FirstOrDefault(),
-                                User = (from u in db.Members
-                                        where m.MemberId == u.MemberId
+                                Memb = (from u in db.Users
+                                        where m.MemberId == u.Id
                                         select u).FirstOrDefault()
                             }).FirstOrDefault();
             if (message == null)
@@ -77,7 +79,7 @@ namespace EugeneCommunity.Controllers
                 ViewBag.CurrentTopics = new SelectList(db.Topics.OrderBy(s => s.Title), "TopicId", "Title");
 
             // For now, send a SelectList of users for client to use as an identity
-            ViewBag.CurrentUsers = new SelectList(db.Members.OrderBy(m => m.UserName), "MemberId", "UserName");
+            ViewBag.CurrentUsers = new SelectList(db.Users.OrderBy(m => m.UserName), "MemberId", "UserName");
             return View();
         }
 
@@ -107,7 +109,7 @@ namespace EugeneCommunity.Controllers
                 {
                     Body = messageVm.Body,
                     Date = DateTime.Now,
-                    MemberId = (int)CurrentUsers,       // Cast possibly null int, app will still crash if it is not filled when form is submitted. TODO: modify when Member is stored in session
+                    MemberId = User.Identity.GetUserId(),
                     TopicId = topic.TopicId
                 };
 
@@ -119,7 +121,7 @@ namespace EugeneCommunity.Controllers
                 return RedirectToAction("Details", "Topics", new { id = topic.TopicId });
             }
             // If form is not completed properly, repopulate the dropdownlist for members and topics
-            ViewBag.CurrentUsers = new SelectList(db.Members.OrderBy(m => m.UserName), "MemberId", "UserName");
+            ViewBag.CurrentUsers = new SelectList(db.Users.OrderBy(m => m.UserName), "MemberId", "UserName");
             ViewBag.CurrentTopics = new SelectList(db.Topics.OrderBy(s => s.Title), "TopicId", "Title");
 
 
@@ -143,8 +145,8 @@ namespace EugeneCommunity.Controllers
                                             Subject = (from t in db.Topics
                                                        where m.TopicId == t.TopicId
                                                        select t).FirstOrDefault(),
-                                            User = (from u in db.Members
-                                                    where m.MemberId == u.MemberId
+                                            Memb = (from u in db.Users
+                                                    where m.MemberId == u.Id
                                                     select u).FirstOrDefault()
                                         }).FirstOrDefault();
             if (message == null)
@@ -156,7 +158,7 @@ namespace EugeneCommunity.Controllers
             ViewBag.CurrentTopics = new SelectList(db.Topics.OrderBy(s => s.Title), "TopicId", "Title", message.Subject.TopicId);
 
             // For now, send a SelectList of users for client to use as an identity
-            ViewBag.CurrentUsers = new SelectList(db.Members.OrderBy(m => m.UserName), "MemberId", "UserName");
+            ViewBag.CurrentUsers = new SelectList(db.Users.OrderBy(m => m.UserName), "MemberId", "UserName");
             return View(message);
         }
 
@@ -173,7 +175,7 @@ namespace EugeneCommunity.Controllers
                              where m.MessageId == messageVm.MessageId
                              select m).FirstOrDefault();
 
-                if (message.MemberId == CurrentUsers)
+                if (message.MemberId == User.Identity.GetUserId())
                 {
                     // Update content of message with MessageViewModel passed from View
                     message.TopicId = (int)CurrentTopics;
@@ -194,7 +196,7 @@ namespace EugeneCommunity.Controllers
             ViewBag.CurrentTopics = new SelectList(db.Topics.OrderBy(s => s.Title), "TopicId", "Title");    // Because a topic wasn't associated with the MessageView object a topicId cannot be preselected after going through the POST Edit method...
 
             // For now, send a SelectList of users for client to use as an identity
-            ViewBag.CurrentUsers = new SelectList(db.Members.OrderBy(m => m.UserName), "MemberId", "UserName");
+            ViewBag.CurrentUsers = new SelectList(db.Users.OrderBy(m => m.UserName), "MemberId", "UserName");
             return View(messageVm);
         }
 
@@ -216,8 +218,8 @@ namespace EugeneCommunity.Controllers
                                Subject = (from t in db.Topics
                                           where m.TopicId == t.TopicId
                                           select t).FirstOrDefault(),
-                               User = (from u in db.Members
-                                       where m.MemberId == u.MemberId
+                               Memb = (from u in db.Users
+                                       where m.MemberId == u.Id
                                        select u).FirstOrDefault()
                            }).FirstOrDefault();
             if (message == null)
@@ -234,9 +236,14 @@ namespace EugeneCommunity.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Message message = db.Messages.Find(id);
-            db.Messages.Remove(message);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            if (message.MemberId == User.Identity.GetUserId())
+            {
+                db.Messages.Remove(message);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("Index", "Error");
         }
 
         // GET: Books/Search
@@ -245,7 +252,7 @@ namespace EugeneCommunity.Controllers
             return View();
         }
 
-        // POST: Books/Search/searchString
+        // POST: Messages/Search/searchString
         [HttpPost]
         public ActionResult Search(string searchTerm)
         {
@@ -260,15 +267,13 @@ namespace EugeneCommunity.Controllers
                                     Subject = (from t in db.Topics
                                             where m.TopicId == t.TopicId
                                             select t).FirstOrDefault(),
-                                    User = (from u in db.Members
-                                            where u.MemberId == m.MessageId
+                                    Memb = (from u in db.Users
+                                            where m.MemberId == u.Id
                                             select u).FirstOrDefault()
                                 }).ToList();
             //  Return the search term to display to user
             ViewBag.SearchTerm = searchTerm;
             return View("Search", messageVms);
-
-            // Partial Views are the perfect thing to do when trying to show the search result page based on the index. But for now just make a new View for the return.
         }
 
         protected override void Dispose(bool disposing)

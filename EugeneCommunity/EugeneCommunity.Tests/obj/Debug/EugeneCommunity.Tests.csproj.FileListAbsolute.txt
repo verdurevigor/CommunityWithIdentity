@@ -36,3 +36,9 @@ C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneComm
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.Owin.xml
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.Owin.Host.SystemWeb.dll
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.Owin.Host.SystemWeb.xml
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Antlr3.Runtime.dll
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.AspNet.Identity.Core.dll
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Antlr3.Runtime.pdb
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity.Tests\bin\Debug\Microsoft.AspNet.Identity.Core.xml
