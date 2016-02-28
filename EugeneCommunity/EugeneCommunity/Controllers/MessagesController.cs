@@ -78,8 +78,6 @@ namespace EugeneCommunity.Controllers
             else
                 ViewBag.CurrentTopics = new SelectList(db.Topics.OrderBy(s => s.Title), "TopicId", "Title");
 
-            // For now, send a SelectList of users for client to use as an identity
-            ViewBag.CurrentUsers = new SelectList(db.Users.OrderBy(m => m.UserName), "MemberId", "UserName");
             return View();
         }
 
@@ -88,7 +86,7 @@ namespace EugeneCommunity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MessageId,Title,Body,Date,TopicId,MemberId")] MessageViewModel messageVm, int? CurrentTopics, int? CurrentUsers)
+        public ActionResult Create([Bind(Include = "MessageId,Title,Body,Date,TopicId,MemberId")] MessageViewModel messageVm, int? CurrentTopics)
         {           
             if (ModelState.IsValid)
             {
@@ -154,11 +152,15 @@ namespace EugeneCommunity.Controllers
                 // Redirect bad user to error page and let them suffer!
                 return Redirect("/Error");
             }
+            // Ensure that current user is owner
+            if (message.Memb.Id != User.Identity.GetUserId())
+            {
+                // Redirect bad user to error page and let them suffer!
+                return Redirect("/Error");
+            }
             // Create a SelectList to pass the subject to the View; final parameter gives the default value to show in view.
             ViewBag.CurrentTopics = new SelectList(db.Topics.OrderBy(s => s.Title), "TopicId", "Title", message.Subject.TopicId);
 
-            // For now, send a SelectList of users for client to use as an identity
-            ViewBag.CurrentUsers = new SelectList(db.Users.OrderBy(m => m.UserName), "MemberId", "UserName");
             return View(message);
         }
 
@@ -167,7 +169,7 @@ namespace EugeneCommunity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "MessageId,Body,Date,Subject,User")] MessageViewModel messageVm, int? CurrentUsers, int? CurrentTopics)
+        public ActionResult Edit([Bind(Include = "MessageId,Body,Date,Subject,User")] MessageViewModel messageVm, int? CurrentTopics)
         {
             if (ModelState.IsValid && CurrentTopics != null)
             {
@@ -195,8 +197,6 @@ namespace EugeneCommunity.Controllers
             // Create a SelectList to pass the subject to the View; final parameter gives the default value to show in view.
             ViewBag.CurrentTopics = new SelectList(db.Topics.OrderBy(s => s.Title), "TopicId", "Title");    // Because a topic wasn't associated with the MessageView object a topicId cannot be preselected after going through the POST Edit method...
 
-            // For now, send a SelectList of users for client to use as an identity
-            ViewBag.CurrentUsers = new SelectList(db.Users.OrderBy(m => m.UserName), "MemberId", "UserName");
             return View(messageVm);
         }
 
@@ -227,6 +227,12 @@ namespace EugeneCommunity.Controllers
                 // Redirect bad user to error page and let them suffer!
                 return Redirect("/Error");
             }
+            // Ensure that current user is owner
+            if (message.Memb.Id != User.Identity.GetUserId())
+            {
+                // Redirect bad user to error page and let them suffer!
+                return Redirect("/Error");
+            }
             return View(message);
         }
 
@@ -243,7 +249,7 @@ namespace EugeneCommunity.Controllers
                 return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index", "Error");
+            return Redirect("/Error");
         }
 
         // GET: Books/Search

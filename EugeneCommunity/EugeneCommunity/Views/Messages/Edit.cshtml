@@ -18,14 +18,6 @@
         
         <!-- This hidden field is used in the POST Edit method -->
         @Html.HiddenFor(model => model.MessageId)
-        
-        <div class="form-group">
-            @Html.LabelFor(model => model.User.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("CurrentUsers", String.Empty)
-                @Html.ValidationMessageFor(model => model.User.UserName, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Subject.Title, htmlAttributes: new { @class = "control-label col-md-2" })

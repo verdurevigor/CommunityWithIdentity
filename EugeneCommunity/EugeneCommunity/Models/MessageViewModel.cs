@@ -14,7 +14,7 @@ namespace EugeneCommunity.Models
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm}")]
         public DateTime Date { get; set; }
         // These last two properties cannot be given [Required] annotation because they are not passed
-        // throught the model to the controller, rather, they are passed through the selectlist objects, separate from the model.
+        // throught the model to the controller, rather, they are used for display in the Message views
         public Topic Subject { get; set; }
         public Member Memb { get; set; }
     }
