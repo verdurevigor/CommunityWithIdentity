@@ -50,20 +50,26 @@ namespace EugeneCommunity.Controllers
             // Set the topics posts with the retrieved list of messages.
             // Then pass this topic with list of messages to the View.
 
-            TopicViewModel topic = new TopicViewModel();
+            TopicMessagesViewModel topic = new TopicMessagesViewModel();
 
             topic = (from t in db.Topics
-                        where t.TopicId == id
-                        select new TopicViewModel
-                        {
-                            TopicId = t.TopicId,
-                            Title = t.Title,
-                            // Add list of messages
-                            Posts = (from p in db.Messages
-                                    where p.TopicId == id
-                                    orderby p.Date descending
-                                    select p).ToList()
-                        }).FirstOrDefault();
+                     where t.TopicId == id
+                     select new TopicMessagesViewModel
+                     {
+                         TopicId = t.TopicId,
+                         Title = t.Title,
+                         Posts = (from p in db.Messages
+                                  join u in db.Users on p.MemberId equals u.Id
+                                  where p.TopicId == t.TopicId
+                                  select new MessageMemberViewModel
+                                  {
+                                      MessageId = p.MessageId,
+                                      MemberId = u.Id,
+                                      Date = p.Date,
+                                      UserName = u.UserName,
+                                      Body = p.Body,                               
+                                  }).ToList()
+                     }).FirstOrDefault();
 
             if (topic == null)
             {
