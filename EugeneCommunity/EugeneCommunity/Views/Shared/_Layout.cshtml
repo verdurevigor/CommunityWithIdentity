@@ -30,13 +30,17 @@
                     <li>@Html.ActionLink("All Messages", "Index", "Messages")</li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    @if (@User.Identity.IsAuthenticated == false)
+                    @if (User.Identity.IsAuthenticated == false)
                     {
                         <li>@Html.ActionLink("Login", "LogIn", "Auth")</li>
                         <li>@Html.ActionLink("Register", "Register", "Auth")</li>
                     }
                     else
                     {
+                        if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                        {
+                            <li>@Html.ActionLink("Manage", "Index", "Authorization")</li>
+                        }
                         <li>@Html.ActionLink("Logout", "Logout", "Auth")</li>
                     }
                 </ul>

@@ -16,7 +16,7 @@ namespace EugeneCommunity
         {
             // Changed application startup to register the initializer.
             // Data which populated database is seeded in EugeneCommunityInitializer model (class).
-            Database.SetInitializer(new EugeneCommunityInitializer());
+            //Database.SetInitializer(new CommunityInitializer());
 
             AreaRegistration.RegisterAllAreas();
             BundleConfig.RegisterBundles(BundleTable.Bundles);

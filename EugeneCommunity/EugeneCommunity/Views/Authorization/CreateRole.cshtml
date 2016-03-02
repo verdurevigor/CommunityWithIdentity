@@ -1,0 +1,30 @@
+﻿@* Notice that this view does not have a model; it is not a strongly typed view *@
+@{
+    ViewBag.Title = "Create Role";
+}
+
+<h2>Create Role</h2>
+@Html.ActionLink("List Roles", "ListRoles") | @Html.ActionLink("Manage User Roles", "ManageRoles")
+<hr />
+<p>@ViewBag.ResultMessage</p>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    
+    <div class="form-horizontal">
+
+        <div class="form-group">
+            <label for="RoleName" class="control-label col-md-2">Role Name:</label>
+            <div class="col-md-10">
+                @Html.TextBox("RoleName", null, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}

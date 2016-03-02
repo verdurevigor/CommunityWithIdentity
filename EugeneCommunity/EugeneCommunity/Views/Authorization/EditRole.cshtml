@@ -1,0 +1,34 @@
+﻿@model Microsoft.AspNet.Identity.EntityFramework.IdentityRole
+
+@{
+    ViewBag.Title = "Edit Role";
+}
+
+
+<h2>Edit Role</h2>
+
+@Html.ActionLink("List Roles", "Index") | @Html.ActionLink("Manage User Roles", "ManageRoles")
+<hr />
+
+@using (Html.BeginForm("EditRole", "Authorization", "POST"))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="form-horizontal">
+
+        <div class="form-group">
+            <label for="RoleName" class="control-label col-md-2">Role Name:</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Name, null, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
