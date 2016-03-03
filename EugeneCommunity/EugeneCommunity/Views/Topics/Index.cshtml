@@ -19,7 +19,7 @@
             @Html.DisplayNameFor(model => model.Title)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.LastPost)
+            @Html.DisplayNameFor(model => model.LastPostDate)
         </th>
     </tr>
 
@@ -29,10 +29,10 @@
             @Html.DisplayFor(modelItem => item.Title)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.LastPost)
+            @Html.DisplayFor(modelItem => item.LastPostDate)
         </td>
         <td>
-            @Html.ActionLink("View Posts", "Details", new { id=item.TopicId }) | @item.Posts.Count()    @* TODO: get count of each topic, not the count of posts from TopicViewModel*@
+            @Html.ActionLink("View Posts", "Details", new { id=item.TopicId }) | @item.Messages.Count()
         </td>
     </tr>
 }

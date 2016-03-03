@@ -1,4 +1,4 @@
-﻿@model EugeneCommunity.Models.MessageViewModel
+﻿@model EugeneCommunity.Models.Message
 
 @{
     ViewBag.Title = "Edit";
@@ -20,10 +20,10 @@
         @Html.HiddenFor(model => model.MessageId)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Subject.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Topic.Title, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("CurrentTopics", String.Empty)
-                @Html.ValidationMessageFor(model => model.Subject.Title, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.Topic.Title, "", new { @class = "text-danger" })
             </div>
         </div>
 

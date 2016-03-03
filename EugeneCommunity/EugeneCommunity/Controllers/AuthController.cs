@@ -57,7 +57,7 @@ namespace EugeneCommunity.Controllers
             }
 
             // user authN failed
-            ModelState.AddModelError("", "Invalid email or password");
+            ModelState.AddModelError("", "Invalid username or password");
             return View();
         }
 

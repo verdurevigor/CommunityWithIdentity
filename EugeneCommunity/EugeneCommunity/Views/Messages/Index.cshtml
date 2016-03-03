@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EugeneCommunity.Models.MessageViewModel>
+﻿@model IEnumerable<EugeneCommunity.Models.Message>
 
 @{
     ViewBag.Title = "Index";
@@ -13,13 +13,13 @@
 <table class="table table-striped table-condensed">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Subject.Title)
+            @Html.DisplayNameFor(model => model.Topic.Title)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Date)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Memb.UserName)
+            @Html.DisplayNameFor(model => model.Member.UserName)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Body)
@@ -30,13 +30,13 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Subject.Title)
+            @Html.DisplayFor(modelItem => item.Topic.Title)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Date)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Memb.UserName)
+            @Html.DisplayFor(modelItem => item.Member.UserName)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Body)

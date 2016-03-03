@@ -6,6 +6,7 @@ namespace EugeneCommunity.Migrations
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
+    using System.Data.Entity.Validation;
     using System.Linq;
 
     internal sealed class Configuration : DbMigrationsConfiguration<EugeneCommunity.Models.AppDbContext>
@@ -13,6 +14,7 @@ namespace EugeneCommunity.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = true;           // This is set so that any data added while testing is simply removed and set back with the data seeded below when 'update-database' is ran.
             ContextKey = "EugeneCommunity.Models.AppDbContext";
         }
 
@@ -93,22 +95,22 @@ namespace EugeneCommunity.Migrations
             {
                 Body = "Pelican Brewery makes a delicious single hop IPA.",
                 Date = new DateTime(2016, 2, 13, 12, 30, 00),
-                MemberId = m1.Id,
-                TopicId = t1.TopicId
+                Member = m1,
+                Topic = t1
             };
             Message p2 = new Message()
             {
                 Body = "Hopworks Urban Brewing from Portland also has an incredible single hope IPA made with Simcoe hops. Give it a try!",
                 Date = new DateTime(2016, 2, 15, 11, 33, 00),
-                MemberId = m4.Id,
-                TopicId = t1.TopicId
+                Member = m4,
+                Topic = t1
             };
             Message p3 = new Message()
             {
                 Body = "Beir Stein is a wonderful location with an unbelievable selection both on tap and in the fridge!",
                 Date = new DateTime(2016, 2, 20, 8, 30, 00),
-                MemberId = m1.Id,
-                TopicId = t2.TopicId
+                Member = m1,
+                Topic = t2
             };
             context.Messages.AddOrUpdate(m => m.Body, p1);
             context.Messages.AddOrUpdate(m => m.Body, p2);

@@ -1,4 +1,4 @@
-﻿@model EugeneCommunity.Models.TopicMessagesViewModel
+﻿@model EugeneCommunity.Models.Topic
 
 @* TODO: consider changing the Model to a MessageViewModel in order to access User Name*@
 
@@ -16,7 +16,24 @@
         @Html.ActionLink("Make a Post", "Create", "Messages", new { topicId = Model.TopicId }, null)
     </p>
 
-    @Html.Partial("MessagesPartialView", Model.Posts)
+    <table class="table table-striped">
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Messages.Date)</td>
+            <td>@Html.DisplayNameFor(model => model.Messages.Member.UserName)</td>
+            <td>@Html.DisplayNameFor(model => model.Messages.Body)</td>
+        </tr>
+
+        @foreach (var item in Model.Messages)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Date.ToString("dd.MM.yyyy")<br />@Html.DisplayFor(modelItem => item.Date.ToString("HH:mm")</td>
+                <td>@Html.DisplayFor(modelItem => item.Member.UserName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Body)</td>
+            </tr>
+        }
+
+    </table>
          
 </div>
 <p>

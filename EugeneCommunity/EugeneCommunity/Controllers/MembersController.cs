@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using EugeneCommunity.Models;
+using Microsoft.AspNet.Identity;
 
 namespace EugeneCommunity.Controllers
 {
@@ -15,7 +16,7 @@ namespace EugeneCommunity.Controllers
     {
         //private EugeneCommunityContext db = new EugeneCommunityContext();
         private AppDbContext db = new AppDbContext();
-        [AllowAnonymous]        // TODO: change this, it is to view member data during dev
+        
         // GET: Members
         public ActionResult Index()
         {
@@ -61,18 +62,19 @@ namespace EugeneCommunity.Controllers
         }
 
         // GET: Members/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(string id)
         {
+            Member loggedIn = db.Users.Find(User.Identity.GetUserId());
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Member member = db.Users.Find(id);
-            if (member == null)
+            // Ensure Member being edited is done by logged in User
+            if (id != loggedIn.Id)
             {
-                return HttpNotFound();
+                return RedirectToAction("Index", "Error");
             }
-            return View(member);
+            return View(loggedIn);
         }
 
         // POST: Members/Edit/5
@@ -80,7 +82,7 @@ namespace EugeneCommunity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "MemberId,FName,Email,Password,State")] Member member)
+        public ActionResult Edit([Bind(Include = "Id,UserName,FName,State,Email")] Member member)
         {
             if (ModelState.IsValid)
             {
@@ -92,7 +94,7 @@ namespace EugeneCommunity.Controllers
         }
 
         // GET: Members/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(string id)
         {
             if (id == null)
             {
@@ -109,7 +111,7 @@ namespace EugeneCommunity.Controllers
         // POST: Members/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(string id)
         {
             Member member = db.Users.Find(id);
             db.Users.Remove(member);

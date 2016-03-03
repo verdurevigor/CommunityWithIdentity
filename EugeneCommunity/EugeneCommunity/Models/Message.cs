@@ -15,8 +15,8 @@ namespace EugeneCommunity.Models
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm}")]
         public virtual DateTime Date { get; set; }
         // FK to Topic
-        public virtual int TopicId { get; set; }
+        public virtual Topic Topic { get; set; }
         // FK to Member
-        public virtual string MemberId { get; set; }
+        public virtual Member Member { get; set; }
     }
 }

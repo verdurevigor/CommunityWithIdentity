@@ -13,12 +13,13 @@ namespace EugeneCommunity.Controllers
 {
     public class TopicsController : Controller
     {
-        //private EugeneCommunityContext db = new EugeneCommunityContext();
         AppDbContext db = new AppDbContext();
+        
 
         // GET: Topics
         public ActionResult Index()
         {
+            /*
             // List of TopicViewModels
             var topic = (from t in db.Topics
                         select new TopicViewModel   // Unnecessary to get TopicViewModel unless I am to count posts or order by post date
@@ -35,8 +36,17 @@ namespace EugeneCommunity.Controllers
                                         orderby p.Date
                                         select p.Date).FirstOrDefault()
                         }).ToList();
-            topic.OrderBy(t => t.LastPost);     // TODO: this ordering function is not creating correct output...
-            return View(topic);
+             * */
+
+            var topics = (from t in db.Topics
+                              select new TopicViewModel(){
+                              TopicId = t.TopicId,
+                              Title = t.Title,
+                              Messages = db.Messages.Where(m => m.Topic == t).ToList()
+                              }).ToList();
+
+            topics.OrderBy(t => t.LastPostDate);
+            return View(topics);
         }
 
         // GET: Topics/Details/5
@@ -46,6 +56,7 @@ namespace EugeneCommunity.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            /*
             // Use linq query to retrieve the topic of given id. Retrieve list of posts on that topic (posts with that topic's fk).
             // Set the topics posts with the retrieved list of messages.
             // Then pass this topic with list of messages to the View.
@@ -70,7 +81,13 @@ namespace EugeneCommunity.Controllers
                                       Body = p.Body,                               
                                   }).ToList()
                      }).FirstOrDefault();
+            */
 
+            var topic = (from t in db.Topics
+                         join m in db.Messages on t.TopicId equals m.Topic.TopicId
+                         join u in db.Users on m.Member.Id equals u.Id
+                         where t.TopicId == id
+                         select t).FirstOrDefault();
             if (topic == null)
             {
                 return HttpNotFound();
@@ -89,26 +106,25 @@ namespace EugeneCommunity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MessageId,Body,Date,Subject,User")] MessageViewModel messageVm)
+        public ActionResult Create([Bind(Include = "MessageId,Body,Date,Topic,User")] Message message)
         {
             // Verify form has appropriate data and that a user has been marked
             if (ModelState.IsValid)
             {
                 // Add new Topic to db, then create a message under that topic
 
-                Topic topic = new Topic() { Title = messageVm.Subject.Title };
-                db.Topics.Add(topic);
+                Topic newTopic = new Topic() { Title = message.Topic.Title };
+                db.Topics.Add(newTopic);
                 db.SaveChanges();
 
-                Message message = new Message() { Body = messageVm.Body, Date = DateTime.Now, MemberId = User.Identity.GetUserId(), TopicId = topic.TopicId };
-                db.Messages.Add(message);
+                Message newMessage = new Message() { Body = message.Body, Date = DateTime.Now, Member = db.Users.Find(User.Identity.GetUserId()), Topic = newTopic };
+                db.Messages.Add(newMessage);
                 db.SaveChanges();
 
                 return RedirectToAction("Index");
             }
-            // If form is invalid repopulate form with sent data, also repopulate the user dropdownlist
-            ViewBag.CurrentUsers = new SelectList(db.Users.OrderBy(m => m.UserName), "MemberId", "UserName");
-            return View(messageVm);
+            // Create failed so return content to form
+            return View(message);
         }
 
         // GET: Topics/Edit/5

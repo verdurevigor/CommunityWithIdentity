@@ -33,8 +33,7 @@ namespace EugeneCommunity.Controllers
         public ActionResult ManageRoles()
         {
             // prepopulate roles for the view's dropdown
-            var list = db.Roles.OrderBy(r => r.Name).ToList().Select(rr =>
-            new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
+            var list = PrePopulateRoleList();
             
             ViewBag.Roles = list;
             return View();
@@ -134,7 +133,7 @@ namespace EugeneCommunity.Controllers
                 ViewBag.RolesForThisUser = userManager.GetRoles(user.Id);
 
                 // prepopulat roles for the view dropdown
-                var list = db.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
+                var list = PrePopulateRoleList();
                 
                 ViewBag.Roles = list;
                 ViewBag.username = user.UserName;
@@ -153,7 +152,7 @@ namespace EugeneCommunity.Controllers
             ViewBag.ResultMessage = "Role created successfully for " + UserName + "!";
 
             // prepopulat roles for the view dropdown
-            var list = db.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
+            var list = PrePopulateRoleList();
             ViewBag.Roles = list;
 
             return View("ManageRoles");
@@ -177,7 +176,7 @@ namespace EugeneCommunity.Controllers
                 ViewBag.ResultMessage = UserName + " doesn't belong to " + RoleName + ".";
             }
             // prepopulat roles for the view dropdown
-            var list = db.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
+            var list = PrePopulateRoleList();
             ViewBag.Roles = list;
 
             return View("ManageRoles");
@@ -247,7 +246,8 @@ namespace EugeneCommunity.Controllers
         public ActionResult SearchMessages(string searchTerm)
         {
             // Get the messages that matches the searchTerm
-            var messageVms = (from m in db.Messages
+            
+            /*var messageVms = (from m in db.Messages
                               where m.Body.Contains(searchTerm)
                               select new MessageViewModel()
                               {
@@ -261,9 +261,16 @@ namespace EugeneCommunity.Controllers
                                           where m.MemberId == u.Id
                                           select u).FirstOrDefault()
                               }).ToList();
+            */
+            var messages = (from m in db.Messages
+                           where m.Body.Contains(searchTerm)
+                           join t in db.Topics on m.Topic equals t
+                           join u in db.Users on m.Member equals u
+                           select m).ToList();
+
             //  Return the search term to display to user
             ViewBag.SearchTerm = searchTerm;
-            return View("ManageMessages", messageVms);
+            return View("ManageMessages", messages);
         }
 
         //
@@ -286,6 +293,16 @@ namespace EugeneCommunity.Controllers
                 return View("ManageMessages");
             }
 
+        }
+        
+        // Method is used to repopulate roles for the ManageRole view's dropdown
+        private List<SelectListItem> PrePopulateRoleList()
+        {
+            
+            var list = db.Roles.OrderBy(r => r.Name).ToList().Select(rr =>
+            new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();
+
+            return list;
         }
     }
 }

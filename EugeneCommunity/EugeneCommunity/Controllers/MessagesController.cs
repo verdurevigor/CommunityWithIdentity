@@ -11,7 +11,7 @@ using Microsoft.AspNet.Identity;
 
 namespace EugeneCommunity.Controllers
 {
-    public class MessagesController : Controller
+    public class MessagesController : Controller    // TODO: Check all views to ensure they receive Message and not MessageViewModel!
     {
         //private EugeneCommunityContext db = new EugeneCommunityContext();
         private AppDbContext db = new AppDbContext();
@@ -19,6 +19,7 @@ namespace EugeneCommunity.Controllers
         // GET: Messages
         public ActionResult Index()
         {
+            /*
             // Query db for list of messages, attaching user and subject to the message
             var messages = (from m in db.Messages
                             orderby m.Date
@@ -34,6 +35,12 @@ namespace EugeneCommunity.Controllers
                                         where m.MemberId == u.Id
                                         select u).FirstOrDefault()
                             }).ToList();
+             * */
+            var messages = (from m in db.Messages
+                            orderby m.Date
+                            join t in db.Topics on m.Topic equals t
+                            join u in db.Users on m.Member equals u
+                            select m).ToList();
             // Order messages by most recent            Not sure if this is working...
             messages.OrderBy(m => m.Date);
             return View(messages);
@@ -47,6 +54,7 @@ namespace EugeneCommunity.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             // Query db for message matching id parameter and include Member and Topic
+            /*
             var message = (from m in db.Messages
                             where id == m.MessageId
                             select new MessageViewModel
@@ -60,7 +68,14 @@ namespace EugeneCommunity.Controllers
                                 Memb = (from u in db.Users
                                         where m.MemberId == u.Id
                                         select u).FirstOrDefault()
-                            }).FirstOrDefault();
+                            }).FirstOrDefault();*/
+
+            var message = (from m in db.Messages
+                           orderby m.Date
+                           join t in db.Topics on m.Topic equals t
+                           join u in db.Users on m.Member equals u
+                           select m).FirstOrDefault();
+            
             if (message == null)
             {
                 // Redirect bad user to error page and let them suffer!
@@ -86,7 +101,7 @@ namespace EugeneCommunity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MessageId,Title,Body,Date,TopicId,MemberId")] MessageViewModel messageVm, int? CurrentTopics)
+        public ActionResult Create([Bind(Include = "MessageId,Title,Body,Date,TopicId")] Message message, int? CurrentTopics)
         {           
             if (ModelState.IsValid)
             {
@@ -97,22 +112,22 @@ namespace EugeneCommunity.Controllers
                 
                 if (topic == null)
                 {
-                    topic = new Topic() { Title = messageVm.Subject.Title };
+                    topic = new Topic() { Title = message.Topic.Title };
                     db.Topics.Add(topic);
                     db.SaveChanges();
                 }
 
-                // Using the MessageViewModel input, create a message object
-                Message message = new Message()
+                // Create a message object
+                Message m = new Message()
                 {
-                    Body = messageVm.Body,
+                    Body = message.Body,
                     Date = DateTime.Now,
-                    MemberId = User.Identity.GetUserId(),
-                    TopicId = topic.TopicId
+                    Member = db.Users.Find(User.Identity.GetUserId()),
+                    Topic = topic
                 };
 
-                // Add and save Message to db
-                db.Messages.Add(message);
+                // Add and save m to db
+                db.Messages.Add(m);
                 db.SaveChanges();
 
                 // Redirect user to the forum topic which they just added a message to
@@ -123,7 +138,7 @@ namespace EugeneCommunity.Controllers
             ViewBag.CurrentTopics = new SelectList(db.Topics.OrderBy(s => s.Title), "TopicId", "Title");
 
 
-            return View(messageVm);
+            return View(message);
         }
 
         // GET: Messages/Edit/5
@@ -134,6 +149,7 @@ namespace EugeneCommunity.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             // Create MessageViewModel from the MessageId to pass to the view
+            /*
             MessageViewModel message = (from m in db.Messages
                                         where m.MessageId == id
                                         select new MessageViewModel(){
@@ -147,19 +163,26 @@ namespace EugeneCommunity.Controllers
                                                     where m.MemberId == u.Id
                                                     select u).FirstOrDefault()
                                         }).FirstOrDefault();
+             * */
+
+            var message = (from m in db.Messages
+                           join t in db.Topics on m.Topic equals t
+                           join u in db.Users on m.Member equals u
+                           select m).FirstOrDefault();
+
             if (message == null)
             {
                 // Redirect bad user to error page and let them suffer!
                 return Redirect("/Error");
             }
             // Ensure that current user is owner
-            if (message.Memb.Id != User.Identity.GetUserId())
+            if (message.Member != db.Users.Find(User.Identity.GetUserId()))
             {
                 // Redirect bad user to error page and let them suffer!
                 return Redirect("/Error");
             }
             // Create a SelectList to pass the subject to the View; final parameter gives the default value to show in view.
-            ViewBag.CurrentTopics = new SelectList(db.Topics.OrderBy(s => s.Title), "TopicId", "Title", message.Subject.TopicId);
+            ViewBag.CurrentTopics = new SelectList(db.Topics.OrderBy(s => s.Title), "TopicId", "Title", message.Topic.TopicId);
 
             return View(message);
         }
@@ -169,22 +192,22 @@ namespace EugeneCommunity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "MessageId,Body,Date,Subject,User")] MessageViewModel messageVm, int? CurrentTopics)
+        public ActionResult Edit([Bind(Include = "MessageId,Body,Date,Subject,User")] Message message, int? CurrentTopics)
         {
             if (ModelState.IsValid && CurrentTopics != null)
             {
-                Message message = (from m in db.Messages
-                             where m.MessageId == messageVm.MessageId
-                             select m).FirstOrDefault();
+                Message updatedMessage = db.Messages.Find(message.MessageId);
 
-                if (message.MemberId == User.Identity.GetUserId())
+                Topic topic = db.Topics.Find(CurrentTopics);
+
+                if (message.Member == db.Users.Find(User.Identity.GetUserId()))
                 {
                     // Update content of message with MessageViewModel passed from View
-                    message.TopicId = (int)CurrentTopics;
-                    message.Body = messageVm.Body;
-                    message.Date = DateTime.Now;
+                    updatedMessage.Topic = topic;
+                    updatedMessage.Body = message.Body;
+                    updatedMessage.Date = DateTime.Now;
 
-                    db.Entry(message).State = EntityState.Modified;
+                    db.Entry(updatedMessage).State = EntityState.Modified;
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
@@ -195,9 +218,9 @@ namespace EugeneCommunity.Controllers
                 }
             }// Invalid ModelState
             // Create a SelectList to pass the subject to the View; final parameter gives the default value to show in view.
-            ViewBag.CurrentTopics = new SelectList(db.Topics.OrderBy(s => s.Title), "TopicId", "Title");    // Because a topic wasn't associated with the MessageView object a topicId cannot be preselected after going through the POST Edit method...
+            ViewBag.CurrentTopics = new SelectList(db.Topics.OrderBy(s => s.Title), "TopicId", "Title", CurrentTopics); // TODO: the last parameter might need to be changed to message.Topic.TopicId
 
-            return View(messageVm);
+            return View(message);
         }
 
         // GET: Messages/Delete/5
@@ -208,6 +231,7 @@ namespace EugeneCommunity.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             // Query db for message matching id parameter and include Member and Topic to create a full MessageViewModel
+            /*
             var message = (from m in db.Messages
                            where id == m.MessageId
                            select new MessageViewModel
@@ -222,13 +246,20 @@ namespace EugeneCommunity.Controllers
                                        where m.MemberId == u.Id
                                        select u).FirstOrDefault()
                            }).FirstOrDefault();
+             */
+
+            var message = (from m in db.Messages
+                           join t in db.Topics on m.Topic equals t
+                           join u in db.Users on m.Member equals u
+                           select m).FirstOrDefault();
+
             if (message == null)
             {
                 // Redirect bad user to error page and let them suffer!
                 return Redirect("/Error");
             }
             // Ensure that current user is owner
-            if (message.Memb.Id != User.Identity.GetUserId())
+            if (message.Member != db.Users.Find(User.Identity.GetUserId()))
             {
                 // Redirect bad user to error page and let them suffer!
                 return Redirect("/Error");
@@ -242,7 +273,7 @@ namespace EugeneCommunity.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Message message = db.Messages.Find(id);
-            if (message.MemberId == User.Identity.GetUserId())
+            if (message.Member == db.Users.Find(User.Identity.GetUserId()))
             {
                 db.Messages.Remove(message);
                 db.SaveChanges();
@@ -263,7 +294,7 @@ namespace EugeneCommunity.Controllers
         public ActionResult Search(string searchTerm)
         {
             // Get the messages that matches the searchTerm
-            var messageVms = (from m in db.Messages
+            /*var messageVms = (from m in db.Messages
                               where m.Body.Contains(searchTerm)
                                 select new MessageViewModel()
                                 {
@@ -277,9 +308,17 @@ namespace EugeneCommunity.Controllers
                                             where m.MemberId == u.Id
                                             select u).FirstOrDefault()
                                 }).ToList();
+             * */
+
+            var message = (from m in db.Messages
+                           where m.Body.Contains(searchTerm)
+                           join t in db.Topics on m.Topic equals t
+                           join u in db.Users on m.Member equals u
+                           select m).ToList();
+
             //  Return the search term to display to user
             ViewBag.SearchTerm = searchTerm;
-            return View("Search", messageVms);
+            return View("Search", message);
         }
 
         protected override void Dispose(bool disposing)
