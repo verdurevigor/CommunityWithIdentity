@@ -21,18 +21,18 @@ namespace EugeneCommunity.Models
         [Display(Name = "Last Post")]
         public DateTime LastPostDate {
             get 
-            {
+            {/*
                 if (Messages.Count == 0)
                     throw new Exception("The property LastPost cannot be accessed until the Messages property has been set");
                 else
-                {
+                {*/
                     foreach (Message p in posts)
                     {
                         if (lastPostDate < p.Date)
                             lastPostDate = p.Date;
                     }
                     return lastPostDate; 
-                }     
+                //}     
             }
         }
 

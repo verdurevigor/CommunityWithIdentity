@@ -219,8 +219,31 @@ namespace EugeneCommunity.Controllers
                 var member = (from u in db.Users where u.Id == id select u).FirstOrDefault();
                 //userManager.Delete(member);
                 db.Users.Remove(member);
-                ViewBag.ResultMessage = "Member " + member.UserName + " was successfully deleted";
+                ViewBag.ResultMessage = "Member " + member.UserName + " was successfully deleted.";
                 db.SaveChanges();
+                return View("ManageMembers");
+            }
+            catch
+            {
+                ViewBag.ResultMessage = "Member was not deleted.";
+                return View("ManageMembers");
+            }
+        }
+
+        [Authorize(Roles="Admin")]
+        public ActionResult DeleteMemberAndMessages(string id)
+        {
+            try
+            {
+                var member = (from u in db.Users where u.Id == id select u).FirstOrDefault();
+                var messages = (from m in db.Messages where m.Member.Id == member.Id select m).ToList();
+                foreach (Message mess in messages)
+                {
+                    db.Messages.Remove(mess);
+                }
+                db.Users.Remove(member);
+                db.SaveChanges();
+                ViewBag.ResultMessage = "Member " + member.UserName + " and all their posted messages were deleted.";
                 return View("ManageMembers");
             }
             catch
@@ -246,29 +269,14 @@ namespace EugeneCommunity.Controllers
         public ActionResult SearchMessages(string searchTerm)
         {
             // Get the messages that matches the searchTerm
-            
-            /*var messageVms = (from m in db.Messages
-                              where m.Body.Contains(searchTerm)
-                              select new MessageViewModel()
-                              {
-                                  MessageId = m.MessageId,
-                                  Body = m.Body,
-                                  Date = m.Date,
-                                  Subject = (from t in db.Topics
-                                             where m.TopicId == t.TopicId
-                                             select t).FirstOrDefault(),
-                                  Memb = (from u in db.Users
-                                          where m.MemberId == u.Id
-                                          select u).FirstOrDefault()
-                              }).ToList();
-            */
+            // TODO: This query is broken. Replace it.
             var messages = (from m in db.Messages
                            where m.Body.Contains(searchTerm)
                            join t in db.Topics on m.Topic equals t
                            join u in db.Users on m.Member equals u
                            select m).ToList();
 
-            //  Return the search term to display to user
+            // Return the search term to display to user
             ViewBag.SearchTerm = searchTerm;
             return View("ManageMessages", messages);
         }
@@ -292,7 +300,6 @@ namespace EugeneCommunity.Controllers
                 ViewBag.ResultMessage = "Message was not deleted.";
                 return View("ManageMessages");
             }
-
         }
         
         // Method is used to repopulate roles for the ManageRole view's dropdown

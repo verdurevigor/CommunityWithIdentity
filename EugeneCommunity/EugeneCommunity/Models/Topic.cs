@@ -19,6 +19,7 @@ namespace EugeneCommunity.Models
         public List<Message> Messages
         {
             get { return posts; }
+            set { posts = value; }
         }
     }
 }

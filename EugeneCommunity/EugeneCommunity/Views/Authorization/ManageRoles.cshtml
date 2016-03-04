@@ -17,8 +17,9 @@
     @Html.AntiForgeryToken()
     <p>
         Username : @Html.TextBox("UserName", null, new { @class = "form-control", @required="true" })
-        <input type="submit" value="Get Roles for this User" class="btn btn-info" />
     </p>
+    
+    <input type="submit" value="Get Roles for this User" class="btn btn-info" />
 }
 
 @if (ViewBag.RolesForThisUser != null)
@@ -45,7 +46,7 @@
 
 <h3>Add Role to User</h3>
 
-@using (Html.BeginForm("AddRoleToUser", "Authorization", new { @class = "form-control" }))
+@using (Html.BeginForm("AddRoleToUser", "Authorization"))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
@@ -62,7 +63,7 @@
 
 <h3>Delete a User from a Role</h3>
 
-@using (Html.BeginForm("DeleteRoleForUser", "Roles", new { @class = "form-control"}))
+@using (Html.BeginForm("DeleteRoleForUser", "Authorization"))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)

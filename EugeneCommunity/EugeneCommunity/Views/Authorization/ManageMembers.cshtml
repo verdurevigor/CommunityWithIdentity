@@ -55,7 +55,10 @@
                 </td>
                 <td>
                     <span onclick="return confirm('Are you sure you want to delete?')">
-                        @Html.ActionLink("Delete Permanently", "DeleteMember", new { id = item.Id })
+                        @Html.ActionLink("Delete Member", "DeleteMember", new { id = item.Id })
+                    </span> | 
+                    <span onclick="return confirm('Are you sure you want to delete member and all their messages?')">
+                        @Html.ActionLink("Delete Member and Messages", "DeleteMemberAndMessages", new { id = item.Id })
                     </span>
                 </td>
             </tr>

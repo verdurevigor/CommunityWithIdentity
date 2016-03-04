@@ -16,6 +16,9 @@
             @Html.DisplayNameFor(model => model.Topic.Title)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.Topic.TopicId)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Date)
         </th>
         <th>
@@ -31,6 +34,9 @@
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Topic.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Topic.TopicId)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Date)

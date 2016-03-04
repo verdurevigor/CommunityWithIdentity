@@ -41,7 +41,3 @@ C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneComm
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\bin\Microsoft.AspNet.Identity.EntityFramework.dll
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\bin\Microsoft.AspNet.Identity.Core.xml
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\bin\Microsoft.AspNet.Identity.EntityFramework.xml
-C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\obj\Debug\EugeneCommunity.Migrations.RestructuredModels.resources
-C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\obj\Debug\EugeneCommunity.csproj.GenerateResource.Cache
-C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\obj\Debug\EugeneCommunity.Migrations.test.resources
-C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\obj\Debug\EugeneCommunity.Migrations.removedJunk.resources

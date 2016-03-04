@@ -293,32 +293,18 @@ namespace EugeneCommunity.Controllers
         [HttpPost]
         public ActionResult Search(string searchTerm)
         {
-            // Get the messages that matches the searchTerm
-            /*var messageVms = (from m in db.Messages
-                              where m.Body.Contains(searchTerm)
-                                select new MessageViewModel()
-                                {
-                                    MessageId = m.MessageId,
-                                    Body = m.Body,
-                                    Date = m.Date,
-                                    Subject = (from t in db.Topics
-                                            where m.TopicId == t.TopicId
-                                            select t).FirstOrDefault(),
-                                    Memb = (from u in db.Users
-                                            where m.MemberId == u.Id
-                                            select u).FirstOrDefault()
-                                }).ToList();
-             * */
+            /*var messages = (from m in db.Messages
+                            where m.Body.Contains(searchTerm)
+                            join t in db.Topics on m.Topic equals t
+                            join u in db.Users on m.Member equals u
+                            select m).ToList();*/
+            //var messages = db.Messages.Include(m => m.Member).Where(m => m.Body.Contains(searchTerm)).ToList();
 
-            var message = (from m in db.Messages
-                           where m.Body.Contains(searchTerm)
-                           join t in db.Topics on m.Topic equals t
-                           join u in db.Users on m.Member equals u
-                           select m).ToList();
-
+            //var messages = db.Messages.Where(m => m.Body.Contains(searchTerm)).Include("Topics.Members").ToList();      // TODO: fix up this query to actually get the Member, the first and second both leave out the Member..
+            var messages = db.Messages.Where(m => m.Body.Contains(searchTerm)).Include("Member").ToList();
             //  Return the search term to display to user
             ViewBag.SearchTerm = searchTerm;
-            return View("Search", message);
+            return View("Search", messages);
         }
 
         protected override void Dispose(bool disposing)

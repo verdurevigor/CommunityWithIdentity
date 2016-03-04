@@ -19,25 +19,6 @@ namespace EugeneCommunity.Controllers
         // GET: Topics
         public ActionResult Index()
         {
-            /*
-            // List of TopicViewModels
-            var topic = (from t in db.Topics
-                        select new TopicViewModel   // Unnecessary to get TopicViewModel unless I am to count posts or order by post date
-                        {
-                            TopicId = t.TopicId,
-                            Title = t.Title,
-                            // Add list of messages
-                            Posts = (from p in db.Messages
-                                     where t.TopicId == p.TopicId
-                                     select p).ToList(),
-                            // Date topic by most recent post for proper ordering
-                            LastPost = (from p in db.Messages
-                                        where p.TopicId == t.TopicId
-                                        orderby p.Date
-                                        select p.Date).FirstOrDefault()
-                        }).ToList();
-             * */
-
             var topics = (from t in db.Topics
                               select new TopicViewModel(){
                               TopicId = t.TopicId,
@@ -56,38 +37,15 @@ namespace EugeneCommunity.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            /*
-            // Use linq query to retrieve the topic of given id. Retrieve list of posts on that topic (posts with that topic's fk).
-            // Set the topics posts with the retrieved list of messages.
-            // Then pass this topic with list of messages to the View.
-
-            TopicMessagesViewModel topic = new TopicMessagesViewModel();
-
-            topic = (from t in db.Topics
-                     where t.TopicId == id
-                     select new TopicMessagesViewModel
-                     {
-                         TopicId = t.TopicId,
-                         Title = t.Title,
-                         Posts = (from p in db.Messages
-                                  join u in db.Users on p.MemberId equals u.Id
-                                  where p.TopicId == t.TopicId
-                                  select new MessageMemberViewModel
-                                  {
-                                      MessageId = p.MessageId,
-                                      MemberId = u.Id,
-                                      Date = p.Date,
-                                      UserName = u.UserName,
-                                      Body = p.Body,                               
-                                  }).ToList()
-                     }).FirstOrDefault();
-            */
-
+            /* I'm not sure why this query wasn't working. I think it has to do with lazy loading...
             var topic = (from t in db.Topics
                          join m in db.Messages on t.TopicId equals m.Topic.TopicId
                          join u in db.Users on m.Member.Id equals u.Id
                          where t.TopicId == id
-                         select t).FirstOrDefault();
+                         select t).FirstOrDefault();*/
+
+            var topic = db.Topics.Where(t => t.TopicId == id).Include("Messages.Member").FirstOrDefault();
+
             if (topic == null)
             {
                 return HttpNotFound();
@@ -178,7 +136,8 @@ namespace EugeneCommunity.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Topic topic = db.Topics.Find(id);
+            //Topic topic = db.Topics.Find(id);
+            var topic = db.Topics.Where(t => t.TopicId == id).Include("Messages").FirstOrDefault();
             db.Topics.Remove(topic);
             db.SaveChanges();
             return RedirectToAction("Index");

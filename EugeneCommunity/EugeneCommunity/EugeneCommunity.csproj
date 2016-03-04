@@ -151,18 +151,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201603030330158_RestructuredModels.cs" />
-    <Compile Include="Migrations\201603030330158_RestructuredModels.Designer.cs">
-      <DependentUpon>201603030330158_RestructuredModels.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603030432491_test.cs" />
-    <Compile Include="Migrations\201603030432491_test.Designer.cs">
-      <DependentUpon>201603030432491_test.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603030436468_removedJunk.cs" />
-    <Compile Include="Migrations\201603030436468_removedJunk.Designer.cs">
-      <DependentUpon>201603030436468_removedJunk.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AppDbContext.cs" />
     <Compile Include="Models\CommunityInitializer.cs" />
@@ -257,17 +245,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201603030330158_RestructuredModels.resx">
-      <DependentUpon>201603030330158_RestructuredModels.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603030432491_test.resx">
-      <DependentUpon>201603030432491_test.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603030436468_removedJunk.resx">
-      <DependentUpon>201603030436468_removedJunk.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
