@@ -11,31 +11,13 @@ using Microsoft.AspNet.Identity;
 
 namespace EugeneCommunity.Controllers
 {
-    public class MessagesController : Controller    // TODO: Check all views to ensure they receive Message and not MessageViewModel!
+    public class MessagesController : Controller
     {
-        //private EugeneCommunityContext db = new EugeneCommunityContext();
         private AppDbContext db = new AppDbContext();
 
         // GET: Messages
         public ActionResult Index()
         {
-            /*
-            // Query db for list of messages, attaching user and subject to the message
-            var messages = (from m in db.Messages
-                            orderby m.Date
-                            select new MessageViewModel
-                            {
-                                MessageId = m.MessageId,
-                                Body = m.Body,
-                                Date = m.Date,
-                                Subject = (from t in db.Topics
-                                           where m.TopicId == t.TopicId
-                                           select t).FirstOrDefault(),
-                                Memb = (from u in db.Users
-                                        where m.MemberId == u.Id
-                                        select u).FirstOrDefault()
-                            }).ToList();
-             * */
             var messages = (from m in db.Messages
                             orderby m.Date
                             join t in db.Topics on m.Topic equals t
@@ -54,21 +36,6 @@ namespace EugeneCommunity.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             // Query db for message matching id parameter and include Member and Topic
-            /*
-            var message = (from m in db.Messages
-                            where id == m.MessageId
-                            select new MessageViewModel
-                            {
-                                MessageId = m.MessageId,
-                                Body = m.Body,
-                                Date = m.Date,
-                                Subject = (from t in db.Topics
-                                           where m.TopicId == t.TopicId
-                                           select t).FirstOrDefault(),
-                                Memb = (from u in db.Users
-                                        where m.MemberId == u.Id
-                                        select u).FirstOrDefault()
-                            }).FirstOrDefault();*/
 
             var message = (from m in db.Messages
                            orderby m.Date
@@ -149,21 +116,6 @@ namespace EugeneCommunity.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             // Create MessageViewModel from the MessageId to pass to the view
-            /*
-            MessageViewModel message = (from m in db.Messages
-                                        where m.MessageId == id
-                                        select new MessageViewModel(){
-                                            MessageId = m.MessageId,
-                                            Body = m.Body,
-                                            //Date = m.Date, Date is not required to present on the View so take it out.
-                                            Subject = (from t in db.Topics
-                                                       where m.TopicId == t.TopicId
-                                                       select t).FirstOrDefault(),
-                                            Memb = (from u in db.Users
-                                                    where m.MemberId == u.Id
-                                                    select u).FirstOrDefault()
-                                        }).FirstOrDefault();
-             * */
 
             var message = (from m in db.Messages
                            join t in db.Topics on m.Topic equals t
@@ -202,14 +154,14 @@ namespace EugeneCommunity.Controllers
 
                 if (message.Member == db.Users.Find(User.Identity.GetUserId()))
                 {
-                    // Update content of message with MessageViewModel passed from View
+                    // Update content of message
                     updatedMessage.Topic = topic;
                     updatedMessage.Body = message.Body;
                     updatedMessage.Date = DateTime.Now;
 
                     db.Entry(updatedMessage).State = EntityState.Modified;
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Details", "Topics", topic.TopicId);
                 }
                 else//Not same user who posted
                 {
@@ -231,22 +183,6 @@ namespace EugeneCommunity.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             // Query db for message matching id parameter and include Member and Topic to create a full MessageViewModel
-            /*
-            var message = (from m in db.Messages
-                           where id == m.MessageId
-                           select new MessageViewModel
-                           {
-                               MessageId = m.MessageId,
-                               Body = m.Body,
-                               Date = m.Date,
-                               Subject = (from t in db.Topics
-                                          where m.TopicId == t.TopicId
-                                          select t).FirstOrDefault(),
-                               Memb = (from u in db.Users
-                                       where m.MemberId == u.Id
-                                       select u).FirstOrDefault()
-                           }).FirstOrDefault();
-             */
 
             var message = (from m in db.Messages
                            join t in db.Topics on m.Topic equals t
@@ -300,8 +236,8 @@ namespace EugeneCommunity.Controllers
                             select m).ToList();*/
             //var messages = db.Messages.Include(m => m.Member).Where(m => m.Body.Contains(searchTerm)).ToList();
 
-            //var messages = db.Messages.Where(m => m.Body.Contains(searchTerm)).Include("Topics.Members").ToList();      // TODO: fix up this query to actually get the Member, the first and second both leave out the Member..
-            var messages = db.Messages.Where(m => m.Body.Contains(searchTerm)).Include("Member").ToList();
+            //var messages = db.Messages.Where(m => m.Body.Contains(searchTerm)).Include("Topics.Members").ToList();      // TODO: fix up this query to actually get the Member, the first and second and third all leave out the Member..
+            var messages = db.Messages.Include("Member").Where(m => m.Body.Contains(searchTerm)).ToList();
             //  Return the search term to display to user
             ViewBag.SearchTerm = searchTerm;
             return View("Search", messages);

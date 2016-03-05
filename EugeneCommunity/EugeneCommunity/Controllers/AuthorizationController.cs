@@ -15,7 +15,7 @@ namespace EugeneCommunity.Controllers
     {
         // Private instance to access database
         private AppDbContext db = new AppDbContext();
-        // Private instance of user manager gives access to identity
+        // Private instance of user manager gives access to identity control
         UserManager<Member> userManager = new UserManager<Member>(
             new UserStore<Member>(new AppDbContext()));
 
@@ -269,13 +269,9 @@ namespace EugeneCommunity.Controllers
         public ActionResult SearchMessages(string searchTerm)
         {
             // Get the messages that matches the searchTerm
-            // TODO: This query is broken. Replace it.
-            var messages = (from m in db.Messages
-                           where m.Body.Contains(searchTerm)
-                           join t in db.Topics on m.Topic equals t
-                           join u in db.Users on m.Member equals u
-                           select m).ToList();
 
+            // TODO: Include the Topic in this query.
+            var messages = db.Messages.Include("Member").Where(m => m.Body.Contains(searchTerm)).ToList();
             // Return the search term to display to user
             ViewBag.SearchTerm = searchTerm;
             return View("ManageMessages", messages);

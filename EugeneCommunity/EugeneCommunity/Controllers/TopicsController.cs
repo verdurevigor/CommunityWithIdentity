@@ -43,8 +43,26 @@ namespace EugeneCommunity.Controllers
                          join u in db.Users on m.Member.Id equals u.Id
                          where t.TopicId == id
                          select t).FirstOrDefault();*/
-
+            db.Configuration.LazyLoadingEnabled = false;    // Disabling lazy loading isn't helping to get the Member.
             var topic = db.Topics.Where(t => t.TopicId == id).Include("Messages.Member").FirstOrDefault();
+            
+            //var topic = db.Topics.Where(t => t.TopicId == id).Include("Messages").FirstOrDefault();
+           /* var topic = (from t in db.Topics
+                             where t.TopicId == id
+                             select new Topic(){
+                                 Title = t.Title,
+                                 TopicId = t.TopicId,
+                                 Messages = (from m in db.Messages
+                                             join u in db.Users on m.Member equals u
+                                             select m).ToList()
+                        }).FirstOrDefault();*/
+            /*
+            var T = db.Topics.Find(id);
+            var messages = (from m in db.Messages
+                            join u in db.Users on m.Member equals u
+                            where m.Topic == T
+                            select m).ToList();
+            T.Messages = messages;*/
 
             if (topic == null)
             {
