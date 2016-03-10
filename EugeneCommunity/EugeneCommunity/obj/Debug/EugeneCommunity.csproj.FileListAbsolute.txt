@@ -1,4 +1,3 @@
-C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\obj\Debug\EugeneCommunity.csprojResolveAssemblyReference.cache
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\bin\EugeneCommunity.dll.config
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\bin\EugeneCommunity.dll
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\bin\EugeneCommunity.pdb
@@ -41,3 +40,4 @@ C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneComm
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\bin\Microsoft.AspNet.Identity.EntityFramework.dll
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\bin\Microsoft.AspNet.Identity.Core.xml
 C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\Brody\Documents\GitHub\CommunityWithIdentity\EugeneCommunity\EugeneCommunity\obj\Debug\EugeneCommunity.csprojResolveAssemblyReference.cache

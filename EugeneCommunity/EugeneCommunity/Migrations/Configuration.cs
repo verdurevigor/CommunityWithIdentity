@@ -8,13 +8,14 @@ namespace EugeneCommunity.Migrations
     using System.Data.Entity.Migrations;
     using System.Data.Entity.Validation;
     using System.Linq;
+    using System.Text;
 
     internal sealed class Configuration : DbMigrationsConfiguration<EugeneCommunity.Models.AppDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
-            AutomaticMigrationDataLossAllowed = true;           // This is set so that any data added while testing is simply removed and set back with the data seeded below when 'update-database' is ran.
+            AutomaticMigrationDataLossAllowed = true;
             ContextKey = "EugeneCommunity.Models.AppDbContext";
         }
         
@@ -22,20 +23,11 @@ namespace EugeneCommunity.Migrations
         {
             //  This method will be called after migrating to the latest version.
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
-
-
             // DO NOT FORGET: in order for this seed code to run, the command 'update-database' must be run in the console.
-
+           
+            // Turn on debugging (be sure to add a breakpoint somewhere in this Seed method)
+            //if (System.Diagnostics.Debugger.IsAttached == false)
+            //    System.Diagnostics.Debugger.Launch();
 
             // Add Users to the database
             
@@ -44,13 +36,14 @@ namespace EugeneCommunity.Migrations
                 new UserStore<Member>(
                     new AppDbContext()));
 
-            AppDbContext db = new AppDbContext();
+            
+            // If the members have already been created, comment out the member and role creations and uncomment the member queries above the Topic creation section
             
             // Initialize some users
             Member u1 = new Member()
             {
-                Email = "brody@email.com",
-                UserName = "Brodster"
+                Email = "xyz@email.com",
+                UserName = "XYZ"
             };
 
             Member u2 = new Member()
@@ -67,203 +60,106 @@ namespace EugeneCommunity.Migrations
 
             Member u4 = new Member()
             {
-                Email = "zach@email.com",
-                UserName = "Zach"
+                Email = "zachariah@email.com",
+                UserName = "BigZ"
             };
             
             // Add users with userManager
-            userManager.Create(u1, "password");
-            userManager.Create(u2, "password");
-            userManager.Create(u3, "password");
-            userManager.Create(u4, "password");
+            userManager.Create(u1, "XyzPswd!");
+            userManager.Create(u2, "AdminPswd!");
+            userManager.Create(u3, "ModeratorPswd!");
+            userManager.Create(u4, "ZachariahPswd!");
            
             // Get user Ids explicitly to add role to the user
-            string id2 = (from u in db.Users
+            string id2 = (from u in context.Users
                           where u.UserName == u2.UserName
                           select u.Id).FirstOrDefault();
-            string id3 = (from u in db.Users
+            string id3 = (from u in context.Users
                           where u.UserName == u3.UserName
                           select u.Id).FirstOrDefault();
 
-            db.Roles.AddOrUpdate(r => r.Name, new IdentityRole() { Name = "Admin" });
-            db.Roles.AddOrUpdate(r => r.Name, new IdentityRole() { Name = "Moderator" });
-            db.SaveChanges();
+            context.Roles.AddOrUpdate(r => r.Name, new IdentityRole() { Name = "Admin" });
+            context.Roles.AddOrUpdate(r => r.Name, new IdentityRole() { Name = "Moderator" });
+            context.SaveChanges();
             userManager.AddToRole(id2, "Admin");
             userManager.AddToRole(id3, "Moderator");
             context.SaveChanges();
-            
-            /*
-            // Create Topics and Messages to be seeded into database
-            Topic t1 = new Topic() { Title = "IPA Crave" };
-            Topic t2 = new Topic() { Title = "Tap Houses" };
-            context.Topics.AddOrUpdate(t => t.Title, t1);
-            context.Topics.AddOrUpdate(t => t.Title, t2);
-            context.SaveChanges();
-
-            t1.TopicId = (from t in db.Topics
-                          where t.Title == t1.Title
-                          select t.TopicId).FirstOrDefault();
-            t2.TopicId = (from t in db.Topics
-                          where t.Title == t2.Title
-                          select t.TopicId).FirstOrDefault();
-                        // TODO: Just tried to set the topicId. Attempt the same with members so that it is a whole entity without pulling a second object of the same thing (EF doesn't like that)
-            
-            // Retrieve members and users explicityly to add to messages
-            var u1 = (from u in db.Users
-                        where u.UserName == m1.UserName
-                        select u).FirstOrDefault();
-            var u4 = (from u in db.Users
-                        where u.UserName == m4.UserName
-                        select u).FirstOrDefault();
-            
-            var s1 = (from t in db.Topics
-                          where t.Title == t1.Title
-                          select t).FirstOrDefault();
-
-            var s2 = (from t in db.Topics
-                        where t.Title == t2.Title
-                        select t).FirstOrDefault();
            
-            // Attempting to only grab users and topics without creating them as above. As if they were already in the db.
-            var m1 = (from u in db.Users
-                      where u.UserName == "Brodster"
+            /* 
+            // Get users if they are already in the database
+            var u1 = (from u in context.Users
+                      where u.UserName == "XYZ"
                       select u).FirstOrDefault();
 
-            var m4 = (from u in db.Users
-                      where u.UserName == "Zach"
+            var u4 = (from u in context.Users
+                      where u.UserName == "BigZ"
                       select u).FirstOrDefault();
-
-            var t1 = (from t in db.Topics
-                      where t.Title == "IPA Crave"
-                      select t).FirstOrDefault();
-
-            var t2 = (from t in db.Topics
-                      where t.Title == "Tap Houses"
-                      select t).FirstOrDefault();
+            */
 
             Message p1 = new Message()
             {
                 Body = "Pelican Brewery makes a delicious single hop IPA.",
                 Date = new DateTime(2016, 2, 13, 12, 30, 00),
-                Member = m1,
-                Topic = t1
+                Member = u1
             };
             Message p2 = new Message()
             {
                 Body = "Hopworks Urban Brewing from Portland also has an incredible single hope IPA made with Simcoe hops. Give it a try!",
                 Date = new DateTime(2016, 2, 15, 11, 33, 00),
-                Member = m4,
-                Topic = t1
+                Member = u4
             };
             Message p3 = new Message()
             {
-                Body = "Beir Stein is a wonderful location with an unbelievable selection both on tap and in the fridge!",
-                Date = new DateTime(2016, 2, 20, 8, 30, 00),
-                Member = m1,
-                Topic = t2
-            };
-            context.Messages.AddOrUpdate(m => m.Body, p1);
-            context.Messages.AddOrUpdate(m => m.Body, p2);
-            context.Messages.AddOrUpdate(m => m.Body, p3);
-            context.SaveChanges();
-            */
-
-            /*
-
-            // This section of an attempt does not place the messages into the database as hoped...     Even attempted again after deleting the db files and recreating users/roles
-
-            // Attempting to create a list of messages and place them in the each topic, then saving the entire Topic object to the db
-            // Currently Members and Roles are intitialized.
-            
-            // Members to use
-            
-            // New Topics to add Messages to
-            Topic t1 = new Topic() { Title = "IPA Crave" };
-            Topic t2 = new Topic() { Title = "Tap Houses" };
-
-            // New Message to add to Topics
-            Message m1 = new Message()
-            {
-                Body = "Pelican Brewery makes a delicious single hop IPA.",
-                Date = new DateTime(2016, 2, 13, 12, 30, 00),
-                Member = u1,
-            };
-            Message m2 = new Message()
-            {
-                Body = "Hopworks Urban Brewing from Portland also has an incredible single hope IPA made with Simcoe hops. Give it a try!",
-                Date = new DateTime(2016, 2, 15, 11, 33, 00),
-                Member = u2
-            };
-            Message m3 = new Message()
-            {
-                Body = "Beir Stein is a wonderful location with an unbelievable selection both on tap and in the fridge!",
+                Body = "Beir Stein is a wonderful location with an unbelievable selection both on tap and in the 'fridge'!",
                 Date = new DateTime(2016, 2, 20, 8, 30, 00),
                 Member = u1
             };
-            
-            // Add Messages to Topics
-            t1.Messages.Add(m1);
-            t1.Messages.Add(m2);
-            t2.Messages.Add(m3);
 
-            // Save Topics to database
-            context.Topics.AddOrUpdate(t=> t.Title, t1);
-            context.Topics.AddOrUpdate(t => t.Title, t2);
-            */
-
-            /*
-            // Still gave error 'Validation failed for one or more entities. See 'EntityValidationErrors' property for more details.'
-            // Attempting to use the topic objects when creating the messages.
-            
-
-            // New Topics to add Messages to
-            Topic t1 = new Topic() { Title = "IPA Crave" };
-            Topic t2 = new Topic() { Title = "Tap Houses" };
-            context.Topics.AddOrUpdate(t => t.Title, t1);
-            context.Topics.AddOrUpdate(t => t.Title, t2);
-            context.SaveChanges();
-
-            t1 = (from t in db.Topics
-                  where t.Title == t1.Title
-                  select t).FirstOrDefault();
-            t2 = (from t in db.Topics
-                  where t.Title == t2.Title
-                  select t).FirstOrDefault();
-            // New Message to add to Topics
-            Message m1 = new Message()
+            Message p4 = new Message()
             {
-                Body = "Pelican Brewery makes a delicious single hop IPA.",
-                Date = new DateTime(2016, 2, 13, 12, 30, 00),
-                Member = u1,
-                Topic = t1
-            };
-            Message m2 = new Message()
-            {
-                Body = "Hopworks Urban Brewing from Portland also has an incredible single hope IPA made with Simcoe hops. Give it a try!",
-                Date = new DateTime(2016, 2, 15, 11, 33, 00),
-                Member = u2,
-                Topic = t1
-            };
-            Message m3 = new Message()
-            {
-                Body = "Beir Stein is a wonderful location with an unbelievable selection both on tap and in the fridge!",
-                Date = new DateTime(2016, 2, 20, 8, 30, 00),
-                Member = u1,
-                Topic = t2
+                Body = "Falling Sky is a brewery, delicatessen, and taphouse all in one. Great food and brews to match!",
+                Date = new DateTime(2016, 2, 21, 9, 47, 00),
+                Member = u1
             };
 
-            // Save Topics to database
-            context.Messages.AddOrUpdate(m => m.Body, m1);
-            context.Messages.AddOrUpdate(m => m.Body, m2);
-            context.Messages.AddOrUpdate(m => m.Body, m3);
-            context.SaveChanges();
-            */
+            Message p5 = new Message()
+            {
+                Body = "Especially great for Sunday is Falling Sky. When you commute by bike to Falling Sky on Sundays you get a discout :)",
+                Date = new DateTime(2016, 2, 21, 15, 12, 00),
+                Member = u1
+            };
 
-            base.Seed(context);
+            Topic t1 = new Topic() { Title = "IPA Crave!", Messages = {p1, p2} };
+            Topic t2 = new Topic() { Title = "Tap Hauses", Messages = {p3, p4, p5} };
 
-            // TODO: I am getting an error when updating the database:
-            // 'Validation failed for one or more entities. See 'EntityValidationErrors' property for more details.'
-            // No Topics or Messages are being seeded, but the Users and Roles seem to be updated...
+            context.Topics.AddOrUpdate(t => t.Title, t1, t2);
+            SaveChanges(context);
+        }
+        
+        // This custome method displays detailed error output to the console.
+        private static void SaveChanges(DbContext context)
+        {
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                var sb = new StringBuilder();
+                foreach (var failure in ex.EntityValidationErrors)
+                {
+                    sb.AppendFormat("{0} failed validation\n", failure.Entry.Entity.GetType());
+                    foreach (var error in failure.ValidationErrors)
+                    {
+                        sb.AppendFormat("- {0} : {1}", error.PropertyName, error.ErrorMessage);
+                        sb.AppendLine();
+                    }
+                }
+                throw new DbEntityValidationException(
+                    "Entity Validation Failed - errors follow:\n" +
+                    sb.ToString(), ex
+                );
+            }
         }
     }
 }

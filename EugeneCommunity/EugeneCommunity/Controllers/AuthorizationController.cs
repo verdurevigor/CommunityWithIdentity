@@ -248,7 +248,7 @@ namespace EugeneCommunity.Controllers
             }
             catch
             {
-                ViewBag.ResultMessage = "Member was not deleted.";
+                ViewBag.ResultMessage = "Member and/or messages were not deleted.";
                 return View("ManageMembers");
             }
             
@@ -268,10 +268,8 @@ namespace EugeneCommunity.Controllers
         [Authorize(Roles = "Admin,Moderator")]
         public ActionResult SearchMessages(string searchTerm)
         {
-            // Get the messages that matches the searchTerm
-
-            // TODO: Include the Topic in this query.
-            var messages = db.Messages.Include("Member").Where(m => m.Body.Contains(searchTerm)).ToList();
+            // Get list of messages where the body contains searchTerm, add to the Messages the associated Topic and Memebr
+            var messages = db.Messages.Include("Topic").Include("Member").Where(m => m.Body.Contains(searchTerm)).ToList();
             // Return the search term to display to user
             ViewBag.SearchTerm = searchTerm;
             return View("ManageMessages", messages);

@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewBag.Title = "Map";
+}
+
+<h2>Map of Eugene Breweries</h2>
+<p class="lead">The city of Eugene has much to explore - both inside from the heart and beyond city limits!</p>
+
+<iframe id="googlemap" src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d11470.521044942194!2d-123.10332455343028!3d44.049692608640186!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sbreweries!5e0!3m2!1sen!2sus!4v1453355934630" 
+        width="800" height="600" frameborder="0" style="border:0" allowfullscreen>
+</iframe>
+
+
+<script type="text/javascript">
+    // Resize map to appropriately fit window size for all devices.
+    // This will aid scrolling on mobile devices (map won't take up screen and therefore screen scroll capability)
+    // Checks window's size on load and on resize.
+$(document).ready(function() {
+
+    var width = $(window).width();
+
+    var width = $(window).width();
+
+    if (width < 975) {
+        console.log("Screen resized to less than 975");
+        $("#googlemap").width(600).height(350);
+    }
+    if (width < 650) {
+        $("#googlemap").width(400).height(400);
+    }
+    if (width < 450) {
+        $("#googlemap").width(250).height(300);
+    }
+});
+
+$(window).resize(function () {
+
+    var width = $(window).width();
+    if (width > 975) {
+        $("#googlemap").width(800).height(600);
+    }
+    else if (width < 975 && width > 650) {
+        console.log("Screen resized to less than 975");
+        $("#googlemap").width(600).height(400);
+    }
+    else if (width < 650 && window > 450) {
+        $("#googlemap").width(400).height(400);
+    }
+    else if (width < 450) {
+        $("#googlemap").width(250).height(300);
+    }   
+});
+</script>

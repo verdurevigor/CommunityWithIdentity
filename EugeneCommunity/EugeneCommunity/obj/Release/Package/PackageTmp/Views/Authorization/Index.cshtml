@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Administrative Tasks</h2>
+
+<hr />
+
+@if (User.IsInRole("Admin"))
+{
+    @Html.ActionLink("Manage Roles", "ManageRoles", "Authorization") <br />
+    @Html.ActionLink("Manage Members", "ManageMembers", "Authorization")
+    <br /><br />
+}
+
+@* @Html.ActionLink("Delete Topic", "ManageTopics", "Authorization") <br />*@
+@Html.ActionLink("Delete Message", "ManageMessages", "Authorization")
+

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<EugeneCommunity.Models.TopicViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Community Forum</h2>
+<h3>What is @User.Identity.Name interested in today?</h3>
+
+<p>
+    @Html.ActionLink("Create New Topic", "Create")
+    |
+    @Html.ActionLink("Search Messages", "Search", "Messages")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastPostDate)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastPostDate)
+        </td>
+        <td>
+            @Html.ActionLink("View Posts", "Details", new { id=item.TopicId }) | @item.Messages.Count()
+        </td>
+    </tr>
+}
+
+</table>

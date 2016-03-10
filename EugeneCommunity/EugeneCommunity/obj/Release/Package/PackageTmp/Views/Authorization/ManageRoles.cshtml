@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "ManageRole";
+}
+
+<h2>Manage Roles</h2>
+@ViewBag.ResultMessage
+<hr />
+
+
+@Html.ActionLink("Create New Role", "CreateRole") | @Html.ActionLink("View All Roles", "ListRoles")
+<hr />
+
+<h3>Get Roles for a User</h3>
+@using (Html.BeginForm("GetRoles", "Authorization"))
+{
+    @Html.AntiForgeryToken()
+    <p>
+        Username : @Html.TextBox("UserName", null, new { @class = "form-control", @required="true" })
+    </p>
+    
+    <input type="submit" value="Get Roles for this User" class="btn btn-info" />
+}
+
+@if (ViewBag.RolesForThisUser != null)
+{
+    <h4>Roles for @ViewBag.username</h4>
+    if (ViewBag.RolesForThisUser.Count == 0)
+    {
+        <p>This use has no roles.</p>
+    }
+    else 
+    { 
+    <ol>
+        @foreach (string s in ViewBag.RolesForThisUser)
+        {
+            <li>@s</li>
+        }
+    </ol>
+    }
+}
+
+<hr />
+
+
+
+<h3>Add Role to User</h3>
+
+@using (Html.BeginForm("AddRoleToUser", "Authorization"))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <p>
+        Username : @Html.TextBox("UserName", null, new { @class = "form-control", @required = "true" })
+        Role Name: @Html.DropDownList("RoleName", (IEnumerable<SelectListItem>)ViewBag.Roles, "Select ...", new { @class = "form-control", @required = "true" })
+
+    </p>
+
+    <input type="submit" value="Save" class="btn btn-success" />
+}
+<hr />
+
+<h3>Delete a User from a Role</h3>
+
+@using (Html.BeginForm("DeleteRoleForUser", "Authorization"))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <p>
+        Username : @Html.TextBox("UserName", null, new { @class = "form-control", @required = "true" })
+        Role Name: @Html.DropDownList("RoleName", (IEnumerable<SelectListItem>)ViewBag.Roles, "Select ...", new { @class = "form-control", @required = "true" })
+
+    </p>
+
+    <input type="submit" value="Delete this user from Role" class="btn btn-danger" />
+}

@@ -65,8 +65,9 @@
                     @Html.DisplayFor(modelItem => item.Body)
                 </td>
                 <td>
-                    @Html.ActionLink("Details", "Details", new { id = item.MessageId }) |
-                    @Html.ActionLink("View Topic", "Details", "Topics", new { id = item.Topic.TopicId }) @* TODO: This link is fauly, it won't even rout the the Topics controller for some reason... *@
+                    @Html.ActionLink("Details", "Details", new { id = item.MessageId }) | 
+                    @* TODO: This link is fauly, it won't even rout the the Topics controller for some reason... *@
+                    @Html.ActionLink("View Topic", "Details", "Topics", new { id = item.Topic.TopicId }) 
                 </td>
             </tr>
         }

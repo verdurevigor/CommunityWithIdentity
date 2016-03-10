@@ -1,0 +1,42 @@
+﻿@model EugeneCommunity.Models.Topic
+
+@* TODO: consider changing the Model to a MessageViewModel in order to access User Name*@
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+    <h4>Topic</h4>
+    <h2>@Html.DisplayFor(model => model.Title)</h2>
+    <hr />
+    <p><!-- The exta parameters in the ActionLink allow me to specify additional parameters, not that null is required for some reason-->
+        @Html.ActionLink("Make a Post", "Create", "Messages", new { topicId = Model.TopicId }, null)
+    </p>
+
+    <table class="table table-striped">
+
+        <tr>
+            @*<td>@Html.DisplayNameFor(model => model.Messages.Date)</td>*@<td>Date</td>
+            @*<td>@Html.DisplayNameFor(model => model.Messages.Member.UserName)</td>*@<td>Username</td>
+            @*<td>@Html.DisplayNameFor(model => model.Messages.Body)</td>*@<td>Body</td>
+                </tr>
+
+                @foreach (var item in Model.Messages)
+                {
+                    <tr>
+                        @*<td>@Html.DisplayFor(modelItem => item.Date.ToString("dd.MM.yyyy"))<br />@Html.DisplayFor(modelItem => item.Date.ToString("HH:mm"))</td>*@
+                        <td>@Html.DisplayFor(modelItem => item.Date)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Member.UserName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Body)</td>
+                    </tr>
+                }
+
+            </table>
+
+        </div>
+        <p>
+            @Html.ActionLink("Back to Topics", "Index")
+        </p>

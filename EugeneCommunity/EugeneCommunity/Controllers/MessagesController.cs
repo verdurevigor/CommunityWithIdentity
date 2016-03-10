@@ -18,12 +18,8 @@ namespace EugeneCommunity.Controllers
         // GET: Messages
         public ActionResult Index()
         {
-            var messages = (from m in db.Messages
-                            orderby m.Date
-                            join t in db.Topics on m.Topic equals t
-                            join u in db.Users on m.Member equals u
-                            select m).ToList();
-            // Order messages by most recent            Not sure if this is working...
+            // Get list of messages where the body contains searchTerm, add to the Messages the associated Topic and Memebr
+            var messages = db.Messages.Include("Topic").Include("Member").ToList();
             messages.OrderBy(m => m.Date);
             return View(messages);
         }
@@ -229,15 +225,8 @@ namespace EugeneCommunity.Controllers
         [HttpPost]
         public ActionResult Search(string searchTerm)
         {
-            /*var messages = (from m in db.Messages
-                            where m.Body.Contains(searchTerm)
-                            join t in db.Topics on m.Topic equals t
-                            join u in db.Users on m.Member equals u
-                            select m).ToList();*/
-            //var messages = db.Messages.Include(m => m.Member).Where(m => m.Body.Contains(searchTerm)).ToList();
-
-            //var messages = db.Messages.Where(m => m.Body.Contains(searchTerm)).Include("Topics.Members").ToList();      // TODO: fix up this query to actually get the Member, the first and second and third all leave out the Member..
-            var messages = db.Messages.Include("Member").Where(m => m.Body.Contains(searchTerm)).ToList();
+            // Get list of messages where the body contains searchTerm, add to the Messages the associated Topic and Memebr
+            var messages = db.Messages.Include("Topic").Include("Member").Where(m => m.Body.Contains(searchTerm)).ToList();
             //  Return the search term to display to user
             ViewBag.SearchTerm = searchTerm;
             return View("Search", messages);
