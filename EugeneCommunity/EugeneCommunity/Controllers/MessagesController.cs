@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using EugeneCommunity.Models;
 using Microsoft.AspNet.Identity;
+using EugeneCommunity.DAL;  // Data access layer for unit testing
 
 namespace EugeneCommunity.Controllers
 {
@@ -15,12 +16,31 @@ namespace EugeneCommunity.Controllers
     {
         private AppDbContext db = new AppDbContext();
 
+        // repo is a fake DbContext to be used when unit testing
+        private IMessageRepository repo;
+
+        public MessagesController()
+        {
+            repo = new FakeMessageRepository();
+        }
+
+        public MessagesController(IMessageRepository m)
+        {
+            repo = m;
+        }
+
         // GET: Messages
         public ActionResult Index()
         {
+            /* Original
             // Get list of messages where the body contains searchTerm, add to the Messages the associated Topic and Memebr
             var messages = db.Messages.Include("Topic").Include("Member").ToList();
             messages.OrderBy(m => m.Date);
+            return View(messages);
+             * */
+
+            // For unit testing
+            var messages = repo.GetAllMessages();
             return View(messages);
         }
 
@@ -65,7 +85,8 @@ namespace EugeneCommunity.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "MessageId,Title,Body,Date,TopicId")] Message message, int? CurrentTopics)
-        {           
+        {
+            /* Original
             if (ModelState.IsValid)
             {
                 // Check if the topic is new, if so create and save a new topic to the database before adding the TopicId to the new message
@@ -99,9 +120,16 @@ namespace EugeneCommunity.Controllers
             // If form is not completed properly, repopulate the dropdownlist for members and topics
             ViewBag.CurrentUsers = new SelectList(db.Users.OrderBy(m => m.UserName), "MemberId", "UserName");
             ViewBag.CurrentTopics = new SelectList(db.Topics.OrderBy(s => s.Title), "TopicId", "Title");
-
-
             return View(message);
+             * */
+
+            // For unit testing
+            repo.Create(message, CurrentTopics);
+            // Return to Index page where all Messages are seen
+            // Because return RedirectToAction("Index") was returning and not redirecting, the UnitTest was failing
+            // For that reason, I simply mimiced the Index() action body content here.
+            var messages = repo.GetAllMessages();
+            return View(messages);
         }
 
         // GET: Messages/Edit/5

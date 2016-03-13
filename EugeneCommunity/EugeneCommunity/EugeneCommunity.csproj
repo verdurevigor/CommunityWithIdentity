@@ -148,6 +148,8 @@
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Controllers\NewsController.cs" />
     <Compile Include="Controllers\TopicsController.cs" />
+    <Compile Include="DAL\FakeMessageRepository.cs" />
+    <Compile Include="DAL\IMessageRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

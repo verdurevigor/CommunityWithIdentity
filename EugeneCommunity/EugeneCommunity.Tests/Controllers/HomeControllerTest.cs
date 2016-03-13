@@ -9,6 +9,7 @@ using EugeneCommunity.Controllers;
 
 namespace EugeneCommunity.Tests.Controllers
 {
+    /*
     [TestClass]
     public class HomeControllerTest
     {
@@ -50,5 +51,5 @@ namespace EugeneCommunity.Tests.Controllers
             // Assert
             Assert.IsNotNull(result);
         }
-    }
+    }*/
 }
